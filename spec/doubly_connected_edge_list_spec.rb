@@ -4,15 +4,21 @@ require 'lib/doubly_connected_edge_list'
 
 describe DoublyConnectedEdgeList do
   it "should have vertices" do
-    DoublyConnectedEdgeList.new.should respond_to :vertices
+    d = DoublyConnectedEdgeList.new
+    d.should respond_to :vertices
+    d.vertices.class.should == Array
   end
   
   it "should have edges" do
-    DoublyConnectedEdgeList.new.should respond_to :edges
+    d = DoublyConnectedEdgeList.new
+    d.should respond_to :edges
+    d.edges.class.should == Array
   end
 
   it "should have faces" do
-    DoublyConnectedEdgeList.new.should respond_to :faces
+    d = DoublyConnectedEdgeList.new
+    d.should respond_to :faces
+    d.faces.class.should == Array
   end
 end
 
@@ -20,6 +26,12 @@ describe Vertex do
   it "should have coordinates" do
     Vertex.new.should respond_to :coordinates
   end
+
+  it "should initialize with coordinates" do
+    Vertex.new.coordinates.should == [0,0]
+    Vertex.new(1,2).coordinates.should == [1,2]
+  end
+  
   it "should have incidentEdge" do
     Vertex.new.should respond_to :incidentEdge
   end
