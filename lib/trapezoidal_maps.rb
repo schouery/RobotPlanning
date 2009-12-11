@@ -12,9 +12,11 @@ class SearchStructure
   end
 
   def find(info, options={})
-    node = root
+    node = @root
+    p node
     while(node.class != TrapezoidNode)
       node = node.child(info, options)
+      p node
     end
     node
   end
@@ -50,10 +52,19 @@ class SearchStructure
     c = TrapezoidNode.new(:leftp => segment.start, :rightp => segment.finish, :top => trapezoid.top, :bottom => segment) 
     d = TrapezoidNode.new(:leftp => segment.start, :rightp => segment.finish, :top => segment, :bottom => trapezoid.bottom)
     
+    parent = cell.parents[0]
+    
     pi.children = [a, qi]
     qi.children = [si,b]
     si.children = [c,d]
-    parent = cell.parent
+    a.parents << pi
+    b.parents << qi
+    c.parents << si
+    d.parents << si
+    si.parents << qi
+    qi.parents << pi
+    pi.parents << parent if !parent.nil?
+    
     
     if(parent.nil?)
       @root = pi
@@ -62,7 +73,7 @@ class SearchStructure
     else
       parent.right_child = pi
     end
-        
+            
     a.neighbours = [cell.left_neighbours, []]
     a.right_neighbours << c unless left_collision && !less_slope
     a.right_neighbours << d unless left_collision && less_slope
@@ -77,11 +88,6 @@ class SearchStructure
     d.left_neighbours << a unless left_collision && less_slope
     d.right_neighbours << b unless right_collision && !less_slope
     
-  end
-
-  def root=(p)
-    @root = p
-    p.parent = nil
   end
 
 end

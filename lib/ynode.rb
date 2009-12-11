@@ -4,6 +4,7 @@ class YNode < Node
   
   def initialize(segment)
     @segment = segment.new_left_to_right
+    super()
   end
 
   def child(q, options={})
@@ -29,7 +30,7 @@ class YNode < Node
   end
 
   def ==(other)
-    @segment == other.segment
+    other.class == YNode && @segment == other.segment
   end
   
   def inspect

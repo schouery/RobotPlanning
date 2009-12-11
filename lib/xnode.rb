@@ -4,6 +4,7 @@ class XNode < Node
 
   def initialize(point)
     @point = point
+    super()
   end
 
   def child(q, options={})
@@ -16,7 +17,7 @@ class XNode < Node
   end
 
   def ==(other)
-    @point == other.point
+    other.class == XNode && @point == other.point
   end
 
   def inspect

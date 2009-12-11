@@ -1,15 +1,14 @@
 class Node
-  attr_accessor :left_child, :right_child, :parent
+  attr_accessor :left_child, :right_child
   attr_reader :left_child, :right_child
+  attr_accessor :parents
 
   def left_child=(c)
     @left_child = c
-    c.parent = self
   end
 
   def right_child=(c)
     @right_child = c
-    c.parent = self
   end
   
   def children=(c)
@@ -19,6 +18,10 @@ class Node
 
   def children
     [left_child, right_child]
+  end
+
+  def initialize
+    @parents = []
   end
 
 end

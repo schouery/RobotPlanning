@@ -8,6 +8,7 @@ class TrapezoidNode < Node
     @trapezoid = Trapezoid.new(options)
     @left_neighbours = []
     @right_neighbours = []
+    super()
   end
 
   def ==(other)

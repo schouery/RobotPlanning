@@ -10,12 +10,7 @@ describe Node do
     Node.new.should respond_to :children
     Node.new.should respond_to :children=
   end
-  
-  it "should know its parent" do
-    Node.new.should respond_to :parent
-    Node.new.should respond_to :parent=
-  end
-  
+    
   it "should know how to paint it self"
   
 end
