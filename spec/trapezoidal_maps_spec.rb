@@ -1,14 +1,21 @@
-require 'rubygems'
-require 'spec'
-require 'lib/trapezoidal_maps'
+require 'spec/spec_helper'
 
 describe SearchStructure do
 
+  before(:each) do
+    @default = SearchStructure.new_from_bounding_box(
+      # segments of bounding box for [[0,0],[1,1]]
+      Segment[Point[-1,-1], Point[2,-1]],
+      Segment[Point[2,-1], Point[2,2]],
+      Segment[Point[2,2], Point[-1,2]],
+      Segment[Point[-1,2], Point[-1,-1]])
+  end
+  
   it "should know it's root" do
     ss = SearchStructure.new
     ss.should respond_to :root
     ss.should respond_to :root=
-    node = mock(Node)
+    node = Node.new
     ss = SearchStructure.new(node)
     ss.root.should == node
   end
@@ -18,138 +25,164 @@ describe SearchStructure do
   end
 
   it "should know how to search a one-node strutucture" do
-    a = mock TrapezoidNode, :class => TrapezoidNode
+    a = TrapezoidNode.new
     ss = SearchStructure.new(a)
-    ss.find(mock(Array)).should == a
+    ss.find(Point[0,0]).should == a
   end
 
   it "should know how to search a two-leaves strutucture" do
-    p1 = mock XNode, :class => XNode
-    a = mock TrapezoidNode, :class => TrapezoidNode
-    b = mock TrapezoidNode, :class => TrapezoidNode
+    p1 = XNode.new(Point[0,0])
+    a, b = TrapezoidNode.new, TrapezoidNode.new
+    p1.left_child, p1.right_child = a, b
     ss = SearchStructure.new(p1)
-    point1,point2 = mock(Array), mock(Array)
-    p1.should_receive(:child).with(point1).and_return(a)
-    p1.should_receive(:child).with(point2).and_return(b)
+    point1, point2 = Point[1,0], Point[-1,0]
     ss.find(point1).should == a
     ss.find(point2).should == b        
+  end  
+  
+  it "should know how to create a initial search structure from a bounding box" do
+    SearchStructure.should respond_to :new_from_bounding_box
+    r = @default.root
+    r.class.should == TrapezoidNode
+    t = r.trapezoid
+    t.leftp.should == Point[-1,-1]
+    t.rightp.should == Point[2,-1]
+    t.top.should == Segment[Point[-1,2],Point[2,2]]
+    t.bottom.should == Segment[Point[-1,-1],Point[2,-1]]
   end
 
-  it "should know how to search complex structures" do
-    # Example from Computational Geometry - de Berg, van Kreveld, Overmars, Schwarzkopf pg 129
-    a,b,c,d,e,f,g = (0..7).to_a.collect {mock TrapezoidNode, :class => TrapezoidNode}
-    p1,q1,p2,q2 = (0..4).to_a.collect {mock XNode, :class => XNode}
-    s1,s2,s2_ = (0..3).to_a.collect {mock YNode, :class => YNode}
-    ss = SearchStructure.new(p1)
-
-    points = []
-    # 8 possible paths to leaves
-    8.times do
-      points << mock(Array)
-    end
-
-    # point, paths that goes to left, left_child, paths that goes to right, right_child
-    expectations = [[p1,  (0..0), a,   (1..7), q1],
-                    [q1,  (1..4), s1,  (5..7), q2],
-                    [s1,  (1..1), b,   (2..4), p2],
-                    [p2,  (2..2), c,   (3..4), s2],
-                    [s2,  (3..3), d,   (4..4), f],
-                    [q2,  (5..6), s2_, (7..7), g],
-                    [s2_, (5..5), e,   (6..6), f]]
-    expectations.each do |info|
-      info[1].to_a.each do |i|
-        info[0].should_receive(:child).with(points[i]).and_return(info[2])
-      end
-      info[3].to_a.each do |i|
-        info[0].should_receive(:child).with(points[i]).and_return(info[4])
-      end
-    end
-        
-    [a,b,c,d,f,e,f,g].each_with_index do |trapezoid, i|
-      ss.find(points[i]).should == trapezoid
-    end
+  it "should know how to add a segment when there is only one trapezoid" do
+    @default.should respond_to :add  
+    segment = Segment[Point[0,0], Point[1,1]]
+    current = @default.find(segment)
+    @default.add(segment)
+    intercepting_one_trapezoid(@default.root,nil,segment,current)
   end
   
-end
-
-describe Node do
-  
-  it "should have two childs" do
-    Node.new.should respond_to :left_child
-    Node.new.should respond_to :right_child
-    Node.new.should respond_to :left_child=
-    Node.new.should respond_to :right_child=
+  it "should know how to insert a segment that intercepts only one trapezoid" do
+    @default.add(Segment[Point[0,0],Point[1,1]])
+    segment = Segment[Point[0.25, 1.25],Point[0.75, 1.25]]
+    current = @default.find(segment, :segment => true)
+    @default.add(segment)
+    s1 = @default.root.right_child.left_child
+    p2 = s1.left_child
+    intercepting_one_trapezoid(p2,s1,segment,current)
   end
   
-  it "should know its parent" do
-    Node.new.should respond_to :parent
-    Node.new.should respond_to :parent=
-  end
-end
-
-describe XNode do
-  it "should be a Node" do
-    XNode.superclass.should == Node
-  end
-  
-  it "should be labelled with a end-point of some segment" do
-    lambda {XNode.new}.should raise_error(ArgumentError)
-    lambda {XNode.new([0,0])}.should_not raise_error(ArgumentError)
+  it "should know how to insert a segment with a commom point on the left with the others segments" do
+    @default.add(Segment[Point[0,0],Point[1,1]])
+    segment = Segment[Point[0,0], Point[0.5,0.75]]
+    current = @default.find(segment, :segment => true)
+    @default.add(segment)
+    new_location = @default.root.right_child.left_child
+    p1 = new_location.left_child
+    intercepting_one_trapezoid(p1,new_location,segment,current, :left_collision => @default.root.left_child)    
   end
   
-  it "should know if a point lies to the left or to the right of the vertical line passing to it's point" do
-    xnode = XNode.new([0,0])
-    xnode.should respond_to :child
-    xnode.left_child, xnode.right_child = :left, :right
-    tests = [[[-1,0], :left],
-             [[1,0], :right],
-             [[0,1], nil]]
-    tests.each do |info|
-      xnode.child(info[0]).should == info[1]
-    end
+  it "should know how to insert a segment with a commom point on the left with the others segments with slope less than the line" do
+    @default.add(Segment[Point[0,0],Point[1,1]])
+    segment = Segment[Point[0,0],Point[0.5,0]]
+    current = @default.find(segment, :segment => true)
+    @default.add(segment)
+    new_location = @default.root.right_child.left_child
+    p1 = new_location.right_child
+    intercepting_one_trapezoid(p1,new_location,segment,current, :left_collision => @default.root.left_child, :with_less_slope => true)    
   end
   
-end
-
-describe YNode do
-  it "should be a Node" do
-    YNode.superclass.should == Node
+  it "should know how to insert a segment with a commom point on the right with the others segments" do
+    @default.add(Segment[Point[0,0], Point[1,1]])
+    segment = Segment[Point[0.5,0.75], Point[1,1]]
+    current = @default.find(segment, :segment => true)
+    @default.add(segment)
+    new_location = @default.root.right_child.left_child
+    p1 = new_location.left_child
+    intercepting_one_trapezoid(p1,new_location,segment,current, :right_collision => @default.root.right_child.right_child)
   end
   
-  it "should be labelled with a segment" do
-    lambda {YNode.new}.should raise_error(ArgumentError)
-    lambda {YNode.new(:only_paramenter)}.should raise_error(ArgumentError)
-    lambda {YNode.new([0,0],[1,1])}.should_not raise_error(ArgumentError)
+  it "should know how to insert a segment with a commom point on the right with the others segments with slope less than the line" do
+    @default.add(Segment[Point[0,0], Point[1,1]])
+    segment = Segment[Point[0.5,0.25], Point[1,1]]
+    current = @default.find(segment, :segment => true)
+    @default.add(segment)
+    new_location = @default.root.right_child.left_child
+    p1 = new_location.right_child
+    intercepting_one_trapezoid(p1,new_location,segment,current, :right_collision => @default.root.right_child.right_child, :with_less_slope => true)    
   end
   
-  it "should know if a point lie above or below the segment stored" do
-    YNode.new([0,0],[1,1]).should respond_to :child
-    nodes = [YNode.new([0,0],[1,1]), YNode.new([1,1],[0,0])]
-    nodes.each do |node|
-      node.left_child = :top
-      node.right_child = :down
-    end
-    # [point, left result, right result, child expected]
-    tests = [[[0,1], true, false, :top],
-            [[1,0], false, true, :down],
-            [[0.5,0.5], false, false, nil]]
-    tests.each do |info|
-      nodes.each do |node|
-        node.should_receive(:left).with([0,0],[1,1],info[0]).and_return info[1]
-        node.should_receive(:right).with([0,0],[1,1],info[0]).and_return info[2] unless info[1]
-        node.child(info[0]).should == info[3]
-      end
+  def intercepting_one_trapezoid(p1, new_location, segment, current, options = {})
+    p1.should == XNode.new(segment[0])
+    trapezoid = current.trapezoid
+    
+    a = p1.left_child
+    if options[:left_collision]
+      a.should == options[:left_collision]
+    else
+      a.should == TrapezoidNode.new(:leftp => trapezoid.leftp, :rightp => segment.start, :top => trapezoid.top, :bottom => trapezoid.bottom)
     end
     
+    q1 = p1.right_child
+    q1.should == XNode.new(segment.finish)
+    
+    s1 = q1.left_child
+    s1.should == YNode.new(segment)
+  
+    b = q1.right_child
+    if options[:right_collision]
+      b.should == options[:right_collision]
+    else
+      b.should == TrapezoidNode.new(:leftp => segment.finish, :rightp => trapezoid.rightp, :top => trapezoid.top, :bottom => trapezoid.bottom)    
+    end
+    
+    c = s1.left_child
+    c.should == TrapezoidNode.new(:leftp => segment.start, :rightp => segment.finish, :top => trapezoid.top, :bottom => segment)
+    
+    d = s1.right_child
+    d.should == TrapezoidNode.new(:leftp => segment.start, :rightp => segment.finish, :top => segment, :bottom => trapezoid.bottom)
+    
+    parent_tests = [[a,p1], [b,q1], [c,s1], [d,s1], [s1,q1], [q1,p1], [p1,new_location]]
+    parent_tests.each do |child, parent|
+      child.parent.should == parent
+    end
+    
+    if(options[:left_collision])
+      if(options[:with_less_slope])
+        a.neighbours.should == [current.left_neighbours, [d]]
+        c.neighbours.should == [[],[b]]
+        d.neighbours.should == [[a],[b]]
+      else
+        a.neighbours.should == [current.left_neighbours, [c]]
+        c.neighbours.should == [[a],[b]]
+        d.neighbours.should == [[],[b]]                
+      end
+      b.neighbours.should == [[c,d],current.right_neighbours]
+    elsif(options[:right_collision])
+      if(options[:with_less_slope])
+        b.neighbours.should == [[d],current.right_neighbours]
+        c.neighbours.should == [[a],[]]
+        d.neighbours.should == [[a],[b]]
+      else
+        b.neighbours.should == [[c],current.right_neighbours]
+        c.neighbours.should == [[a],[b]]
+        d.neighbours.should == [[a],[]]
+      end
+      a.neighbours.should == [current.left_neighbours, [c,d]]
+    else
+      a.neighbours.should == [current.left_neighbours, [c,d]]
+      b.neighbours.should == [[c,d],current.right_neighbours]
+      c.neighbours.should == [[a],[b]]
+      d.neighbours.should == [[a],[b]]
+    end
   end
   
-  it "should calculate left"
-  it "should calculate right"
+  # it "should work for know problems" do
+  #   @ss = SearchStructure.new_from_bounding_box(
+  #     Segment[Point[10,10],Point[530,10]],
+  #     Segment[Point[530,10],Point[530,530]],
+  #     Segment[Point[530,530],Point[530,10]],
+  #     Segment[Point[530,10],Point[10,10]])
+  #   @ss.add Segment[Point[30,30],Point[200,20]]
+  #   @ss.add Segment[Point[230,230],Point[400,200]]
+  # end
   
-end
-
-describe TrapezoidNode do
-  it "should be a Node" do
-    TrapezoidNode.superclass.should == Node
-  end
+  it "should know how to paint it self"
 end

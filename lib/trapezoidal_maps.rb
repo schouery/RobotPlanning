@@ -1,63 +1,87 @@
+require "lib/trapezoid"
+require 'lib/node'
+require 'lib/xnode'
+require 'lib/ynode'
+require 'lib/trapezoid_node'
+
 class SearchStructure
-  attr_accessor :root
+  attr_reader :root
   
   def initialize(root = nil)
     @root = root
   end
-  
-  def find(point)
+
+  def find(info, options={})
     node = root
     while(node.class != TrapezoidNode)
-      node = node.child(point)
+      node = node.child(info, options)
     end
     node
   end
 
-end
-
-class Node
-  attr_accessor :left_child, :right_child, :parent
-end
-
-class XNode < Node
-
-  def initialize(point)
-    @point = point
+  def self.new_from_bounding_box(s1, s2, s3, s4)
+    SearchStructure.new(TrapezoidNode.new(:leftp => s1.start, :rightp => s1.finish, :bottom => s1, :top => s3))
   end
-  
-  def child(q)
-    if q[0] < @point[0]
-      @left_child
-    elsif q[0] > @point[0]
-      @right_child
+
+  def add(segment)
+    cell = find(segment, :segment => true)
+    trapezoid = cell.trapezoid
+
+    # for only ony trapezoid
+    pi = XNode.new(segment.start)
+    qi = XNode.new(segment.finish)
+    si = YNode.new(segment)
+    less_slope = (segment.start == trapezoid.bottom.start) || (segment.finish == trapezoid.top.finish)
+    left_collision = (segment.start == trapezoid.leftp)
+    right_collision = (segment.finish == trapezoid.rightp)
+    
+    a =  if left_collision
+      cell.left_neighbours[0]
     else
-      nil
+      TrapezoidNode.new(:leftp => trapezoid.leftp, :rightp => segment.start, :top => trapezoid.top, :bottom => trapezoid.bottom)
     end
-  end
-  
-end
-
-class YNode < Node
-  
-  def initialize(a,b)
-    if(a[0] < b[0] || a[1] < b[1])
-      @a, @b = a, b
+    
+    b =  if right_collision
+      cell.right_neighbours[0]
     else
-      @a, @b = b, a
+      TrapezoidNode.new(:leftp => segment.finish, :rightp => trapezoid.rightp, :top => trapezoid.top, :bottom => trapezoid.bottom)
     end
-  end
-  
-  def child(q)
-    if left(@a,@b,q)
-      @left_child
-    elsif right(@a,@b,q)
-      @right_child
+    
+    c = TrapezoidNode.new(:leftp => segment.start, :rightp => segment.finish, :top => trapezoid.top, :bottom => segment) 
+    d = TrapezoidNode.new(:leftp => segment.start, :rightp => segment.finish, :top => segment, :bottom => trapezoid.bottom)
+    
+    pi.children = [a, qi]
+    qi.children = [si,b]
+    si.children = [c,d]
+    parent = cell.parent
+    
+    if(parent.nil?)
+      @root = pi
+    elsif(parent.left_child == cell)
+      parent.left_child = pi
     else
-      nil
+      parent.right_child = pi
     end
+        
+    a.neighbours = [cell.left_neighbours, []]
+    a.right_neighbours << c unless left_collision && !less_slope
+    a.right_neighbours << d unless left_collision && less_slope
+    
+    b.neighbours = [[],cell.right_neighbours]
+    b.left_neighbours << c unless right_collision && less_slope
+    b.left_neighbours << d unless right_collision && !less_slope
+    
+    c.left_neighbours << a unless left_collision && !less_slope
+    c.right_neighbours << b unless right_collision && less_slope
+    
+    d.left_neighbours << a unless left_collision && less_slope
+    d.right_neighbours << b unless right_collision && !less_slope
+    
   end
-  
-end
 
-class TrapezoidNode < Node
+  def root=(p)
+    @root = p
+    p.parent = nil
+  end
+
 end
