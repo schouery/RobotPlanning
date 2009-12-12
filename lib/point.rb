@@ -11,4 +11,8 @@ class Point
   def ==(other)
     other.class == Point && other.x == x && other.y == y
   end
+  
+  def inspect
+    "(#{x},#{y})"
+  end
 end

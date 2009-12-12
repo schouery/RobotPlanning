@@ -12,4 +12,10 @@ class Trapezoid
     (other.leftp == @leftp) && (other.rightp == @rightp) && (other.top == @top) && (other.bottom == @bottom)
   end
   
+  def inspect
+    "leftp: #{leftp.inspect})\n" +
+    "rightp: #{rightp.inspect}\n" +
+    "top: #{top.inspect}\n" +
+    "bottom: #{bottom.inspect}\n"
+  end
 end

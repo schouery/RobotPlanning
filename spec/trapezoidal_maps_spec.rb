@@ -107,7 +107,6 @@ describe SearchStructure do
     else
       old = []
     end
-    p old
     @default.add(segment)
     options.each_pair do |key, value|
       options[key] = value.call(@default) if value.respond_to?(:call)
@@ -197,17 +196,87 @@ describe SearchStructure do
     end
   end
   
+  it "should work for crossing segments" do
+    P1, Q1 = Point[0,0], Point[1,1]
+    P2, Q2 = Point[-0.25,1.25], Point[1.25, 1.25]
+    S1,S2 = Segment[P1,Q1], Segment[P2,Q2]
+    LEFT, RIGHT = Point[-1,-1], Point[2,-1]
+    BOTTOM = Segment[LEFT,RIGHT]
+    TOP = Segment[Point[-1,2], Point[2,2]]
+    @default.add(S1)
+    @default.add(S2)
+    p1 = @default.root
+    p2 = p1.left_child
+    a = p2.left_child
+    s2_1 = p2.right_child
+    b = s2_1.left_child
+    g1 = s2_1.right_child
+    q1 = p1.right_child
+    s1 = q1.left_child
+    s2_2 = s1.left_child
+    g2 = s2_2.left_child
+    c = s2_2.right_child
+    d = s1.right_child
+    q2 = q1.right_child
+    s2_3 = q2.left_child
+    g3 = s2_3.left_child
+    e = s2_3.right_child
+    f = q2.right_child
+    p1.should == XNode.new(P1)
+    p2.should == XNode.new(P2)
+    s2_1.should == YNode.new(S2)
+    s2_2.should == YNode.new(S2)
+    s2_3.should == YNode.new(S2)
+    s1.should == YNode.new(S1)
+    q1.should == XNode.new(Q1)
+    q2.should == XNode.new(Q2)
+    
+    a.should == TrapezoidNode.new(:leftp => LEFT, :rightp => P2, :top => TOP, :bottom => BOTTOM)     
+    b.should == TrapezoidNode.new(:leftp => P2, :rightp => P1, :top => S2, :bottom => BOTTOM) 
+    c.should == TrapezoidNode.new(:leftp => P1, :rightp => Q1, :top => S2, :bottom => S1)
+    d.should == TrapezoidNode.new(:leftp => P1, :rightp => Q1, :top => S1, :bottom => BOTTOM)
+    e.should == TrapezoidNode.new(:leftp => Q1, :rightp => Q2, :top => S2, :bottom => BOTTOM)
+    f.should == TrapezoidNode.new(:leftp => Q2, :rightp => RIGHT, :top => TOP, :bottom => BOTTOM)
   
-  it "should work for know problems" do
-    @ss = SearchStructure.new_from_bounding_box(
-      Segment[Point[10,10],Point[530,10]],
-      Segment[Point[530,10],Point[530,530]],
-      Segment[Point[530,530],Point[530,10]],
-      Segment[Point[530,10],Point[10,10]])
-    @ss.add Segment[Point[30,30],Point[200,20]]
-    @ss.add Segment[Point[230,230],Point[400,200]]
+    g1.should == TrapezoidNode.new(:leftp => P2, :rightp => Q2, :top => TOP, :bottom => S2)
+    g1.object_id.should == g2.object_id
+    g1.object_id.should == g3.object_id
+    
+    # testando pais
+    p1.parents.should == []
+    p2.parents.should == [p1]
+    a.parents.should == [p2]
+    s2_1.parents.should == [p2]
+    b.parents.should == [s2_1]
+    q1.parents.should == [p1]
+    s1.parents.should == [q1]
+    s2_2.parents.should == [s1]
+    c.parents.should == [s2_2]
+    d.parents.should == [s1]
+    q2.parents.should == [q1]
+    s2_3.parents.should == [q2]
+    e.parents.should == [s2_3]
+    f.parents.should == [q2]
+    g1.parents.should == [s2_1,s2_2, s2_3]
+   
+    # testando vizinhança
+    a.left_neighbours.should == []
+    a.right_neighbours.should == [g1,b]
+    b.left_neighbours.should == [a]
+    b.right_neighbours.should == [c,d]
+    c.left_neighbours.should == [b]
+    c.right_neighbours.should == [e]
+    d.left_neighbours.should == [b]
+    d.right_neighbours.should == [e]
+    e.left_neighbours.should == [c,d]
+    e.right_neighbours.should == [f]
+    f.left_neighbours.should == [g1,e]
+    f.right_neighbours.should == []
+    g1.left_neighbours.should == [a]
+    g1.right_neighbours.should == [f]
+    
   end
-  
+    
   it "should know how to paint it self"
   
 end

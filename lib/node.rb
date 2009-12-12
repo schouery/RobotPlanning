@@ -5,10 +5,12 @@ class Node
 
   def left_child=(c)
     @left_child = c
+    c.parents << self
   end
 
   def right_child=(c)
     @right_child = c
+    c.parents << self
   end
   
   def children=(c)

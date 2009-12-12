@@ -39,4 +39,7 @@ class Segment
     end
   end
   
+  def inspect
+    "[#{@start.inspect}, #{@finish.inspect}]"
+  end
 end
