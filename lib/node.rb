@@ -25,5 +25,4 @@ class Node
   def initialize
     @parents = []
   end
-
 end

@@ -15,4 +15,8 @@ class Point
   def inspect
     "(#{x},#{y})"
   end
+  
+  def to_a
+    [@x, @y]
+  end
 end

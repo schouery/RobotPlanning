@@ -32,10 +32,8 @@ describe YNode do
       nodes.each do |node|
         node.child(info[0]).should == info[3]
       end
-    end
-    
+    end  
   end
-  
   
   it "should know if a segment lie above or below the segment stored" do
     s = Segment[Point[0,0],Point[1,1]]
@@ -52,6 +50,14 @@ describe YNode do
     node.child(segment2, :segment => true).should == bottom
   end
   
-  it "should know how to paint it self"
+  it "should know how to draw it self" do
+    s = mock(Segment)
+    d = mock(Drawer)
+    s.should_receive(:new_left_to_right).and_return(s)
+    node = YNode.new(s)
+    node.should respond_to :draw
+    s.should_receive(:draw).with(d)
+    node.draw(d)
+  end
   
 end

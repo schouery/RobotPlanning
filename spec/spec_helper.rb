@@ -9,3 +9,7 @@ require 'lib/trapezoid'
 require 'lib/trapezoidal_maps'
 require 'lib/xnode'
 require 'lib/ynode'
+require 'lib/drawer'
+require 'lib/graph'
+require 'libglade2'
+

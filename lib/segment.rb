@@ -42,4 +42,25 @@ class Segment
   def inspect
     "[#{@start.inspect}, #{@finish.inspect}]"
   end
+  
+  def x_projection(point)
+    x = point.x
+    if start.x != finish.x
+      y = (start.x*finish.y + x*start.y - x*finish.y - start.y*finish.x)/(start.x - finish.x)
+    else
+      return nil if point.x != start.x
+      if point.y < start.y && point.y > finish.y || point.y > start.y && point.y < finish.y
+        return point 
+      elsif (point.y - start.y).abs < (point.y - finish.y).abs    
+        y = start.y
+      else
+        y = finish.y
+      end
+    end
+    Point[x,y]
+  end
+  
+  def draw(drawer)
+    drawer.draw_segment(self)
+  end
 end

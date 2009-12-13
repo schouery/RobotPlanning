@@ -47,4 +47,26 @@ describe Segment do
     @default.should respond_to :[]
   end
 
+  it "should calculate the x-projection" do
+    @default.should respond_to :x_projection
+    @default.x_projection(Point[0,0]).should be_instance_of(Point)
+    @default.x_projection(Point[0,0]).should == Point[0,0]
+    @default.x_projection(Point[0.5,1]).should == Point[0.5,0.5]
+    segment1 = Segment[Point[0,0], Point[0,1]]
+    segment2 = Segment[Point[0,1], Point[0,0]]
+    segment1.x_projection(Point[1,1]).should be_nil
+    segment2.x_projection(Point[1,1]).should be_nil
+    segment1.x_projection(Point[0,0.5]).should == Point[0,0.5]
+    segment2.x_projection(Point[0,0.5]).should == Point[0,0.5]
+    segment1.x_projection(Point[0,1.1]).should == Point[0,1]
+    segment2.x_projection(Point[0,1.1]).should == Point[0,1]
+  end
+
+  it "should know how to draw itself" do
+    @default.should respond_to :draw
+    d = mock(Drawer)
+    d.should_receive(:draw_segment).with(@default)
+    @default.draw(d)
+  end
+
 end

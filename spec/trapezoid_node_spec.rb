@@ -38,6 +38,11 @@ describe TrapezoidNode do
     t.neighbours.should == [[],[]]
   end
   
-  it "should know how to paint it self"
+  it "should know how to draw it self" do
+    t = TrapezoidNode.new
+    d = mock(Drawer)
+    t.trapezoid.should_receive(:draw).with(d)
+    t.draw(d)
+  end
   
 end

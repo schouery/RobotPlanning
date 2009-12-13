@@ -58,5 +58,10 @@ describe Trapezoid do
     t1.should == t2
   end
   
-  it "should know how to paint it self"  
+  it "should know how to draw it self" do
+    d = mock(Drawer)
+    t = Trapezoid.new
+    d.should_receive(:draw_trapezoid).with(t)
+    t.draw(d)
+  end
 end

@@ -24,6 +24,4 @@ describe XNode do
     end
   end
   
-  it "should know how to paint it self"
-  
 end

@@ -13,7 +13,7 @@ class YNode < Node
         if @segment.left(q.finish)
           @left_child
         else
-          @right_child   
+          @right_child
         end
       else
         child q.start
@@ -36,4 +36,9 @@ class YNode < Node
   def inspect
     "YNode: #{@segment.inspect}"
   end
+  
+  def draw(drawer)
+    @segment.draw(drawer)
+  end
+  
 end
