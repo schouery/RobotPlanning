@@ -1,11 +1,15 @@
 class Planning
 
-  def initialize(segments)
-    segments.shuffle!
-    p segments
-    s1,s2,s3,s4 = BoundingBox.box_for([Point[20,20],Point[520,20],Point[520,520],Point[20,520]], 10)
-    @ss = SearchStructure.new_from_bounding_box(s1,s2,s3,s4)
-    segments.each do |segment|
+  def initialize(segments, w, h)
+    @segments = segments.shuffle
+    # p @segments
+    d = 3
+    @ss = SearchStructure.new_from_bounding_box(
+      Segment[Point[d,d], Point[w-d, d]],
+      Segment[Point[w-d,d], Point[w-d, h-d]],
+      Segment[Point[w-d,h-d], Point[d, h-d]],
+      Segment[Point[d,h-d], Point[d, d]])
+    @segments.each do |segment|
       @ss.add(segment)
     end
     @graph = @ss.create_graph

@@ -3,7 +3,3 @@
  */
 
 GtkWidget* create_mainwindow (void);
-GtkWidget* create_colordialog (void);
-GtkWidget* create_opendialog (void);
-GtkWidget* create_savedialog (void);
-GtkWidget* create_aboutdialog (void);

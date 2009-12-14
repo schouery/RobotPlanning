@@ -103,3 +103,79 @@ on_togglebutton1_toggled               (GtkToggleButton *togglebutton,
 void
 on_next_step_clicked                   (GtkButton       *button,
                                         gpointer         user_data);
+
+gboolean
+on_drawingarea_button_press_event      (GtkWidget       *widget,
+                                        GdkEventButton  *event,
+                                        gpointer         user_data);
+
+gboolean
+on_drawingarea_expose_event            (GtkWidget       *widget,
+                                        GdkEventExpose  *event,
+                                        gpointer         user_data);
+
+void
+on_speedscale_value_changed            (GtkRange        *range,
+                                        gpointer         user_data);
+
+gboolean
+on_mainwindow_destroy_event            (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);
+
+gboolean
+on_mainwindow_destroy_event            (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);
+
+GtkFileChooserConfirmation
+on_savedialog_file_activated           (GtkFileChooser  *filechooser,
+                                        gpointer         user_data);
+
+void
+on_savedialog_file_activated           (GtkFileChooser  *filechooser,
+                                        gpointer         user_data);
+
+void
+on_savedialog_close                    (GtkDialog       *dialog,
+                                        gpointer         user_data);
+
+void
+on_save_cancel_clicked                 (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_save_ok_clicked                     (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_open_cancel_clicked                 (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_open_ok_clicked                     (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_color_ok_clicked                    (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_color_cancel_clicked                (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_aboutdialog_close                   (GtkDialog       *dialog,
+                                        gpointer         user_data);
+
+void
+on_about_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_toolbar_move_toggled                (GtkToggleToolButton *toggletoolbutton,
+                                        gpointer         user_data);
+
+void
+on_play_toggled                        (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);

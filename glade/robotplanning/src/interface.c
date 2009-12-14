@@ -53,7 +53,7 @@ create_mainwindow (void)
   GtkWidget *color_robot;
   GtkWidget *menuitem7;
   GtkWidget *menuitem7_menu;
-  GtkWidget *sobre;
+  GtkWidget *about;
   GtkWidget *toolbar1;
   GtkIconSize tmp_toolbar_icon_size;
   GtkWidget *toolbar_new;
@@ -72,14 +72,14 @@ create_mainwindow (void)
   GtkWidget *hseparator2;
   GtkWidget *hbox2;
   GtkWidget *label2;
-  GtkObject *xinput_adj;
-  GtkWidget *xinput;
+  GtkObject *xvalue_adj;
+  GtkWidget *xvalue;
   GtkWidget *label3;
-  GtkObject *yinput_adj;
-  GtkWidget *yinput;
+  GtkObject *yvalue_adj;
+  GtkWidget *yvalue;
   GtkWidget *add_point;
   GtkWidget *vseparator1;
-  GtkWidget *togglebutton1;
+  GtkWidget *play;
   GtkWidget *alignment1;
   GtkWidget *hbox3;
   GtkWidget *image1;
@@ -195,9 +195,9 @@ create_mainwindow (void)
   menuitem7_menu = gtk_menu_new ();
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem7), menuitem7_menu);
 
-  sobre = gtk_menu_item_new_with_mnemonic (_("_Sobre"));
-  gtk_widget_show (sobre);
-  gtk_container_add (GTK_CONTAINER (menuitem7_menu), sobre);
+  about = gtk_menu_item_new_with_mnemonic (_("_Sobre"));
+  gtk_widget_show (about);
+  gtk_container_add (GTK_CONTAINER (menuitem7_menu), about);
 
   toolbar1 = gtk_toolbar_new ();
   gtk_widget_show (toolbar1);
@@ -229,12 +229,13 @@ create_mainwindow (void)
   gtk_container_add (GTK_CONTAINER (toolbar1), toolbar_record_poits);
   gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbar_record_poits), tooltips, _("Adicionar Pontos"), NULL);
 
+  toolbar_move = (GtkWidget*) gtk_toggle_tool_button_new ();
+  gtk_tool_button_set_label (GTK_TOOL_BUTTON (toolbar_move), "");
   tmp_image = gtk_image_new_from_stock ("gtk-jump-to", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
-  toolbar_move = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Mover Rob\303\264"));
+  gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (toolbar_move), tmp_image);
   gtk_widget_show (toolbar_move);
   gtk_container_add (GTK_CONTAINER (toolbar1), toolbar_move);
-  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbar_move), tooltips, _("Mover Rob\303\264"), NULL);
 
   vbox2 = gtk_vbox_new (FALSE, 0);
   gtk_widget_show (vbox2);
@@ -257,7 +258,7 @@ create_mainwindow (void)
   gtk_widget_show (label1);
   gtk_box_pack_start (GTK_BOX (hbox1), label1, FALSE, FALSE, 0);
 
-  speedscale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 100, 1, 0, 0)));
+  speedscale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (1, 1, 100, 1, 10, 0)));
   gtk_widget_show (speedscale);
   gtk_box_pack_start (GTK_BOX (hbox1), speedscale, TRUE, TRUE, 0);
   gtk_scale_set_draw_value (GTK_SCALE (speedscale), FALSE);
@@ -279,21 +280,19 @@ create_mainwindow (void)
   gtk_widget_show (label2);
   gtk_box_pack_start (GTK_BOX (hbox2), label2, FALSE, FALSE, 5);
 
-  xinput_adj = gtk_adjustment_new (100, 0, 100, 1, 10, 10);
-  xinput = gtk_spin_button_new (GTK_ADJUSTMENT (xinput_adj), 1, 0);
-  gtk_widget_show (xinput);
-  gtk_box_pack_start (GTK_BOX (hbox2), xinput, FALSE, TRUE, 0);
-  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (xinput), TRUE);
+  xvalue_adj = gtk_adjustment_new (1, 1, 799, 1, 10, 0);
+  xvalue = gtk_spin_button_new (GTK_ADJUSTMENT (xvalue_adj), 1, 0);
+  gtk_widget_show (xvalue);
+  gtk_box_pack_start (GTK_BOX (hbox2), xvalue, FALSE, TRUE, 0);
 
   label3 = gtk_label_new (_("Y: "));
   gtk_widget_show (label3);
   gtk_box_pack_start (GTK_BOX (hbox2), label3, FALSE, FALSE, 5);
 
-  yinput_adj = gtk_adjustment_new (100, 0, 100, 1, 10, 10);
-  yinput = gtk_spin_button_new (GTK_ADJUSTMENT (yinput_adj), 1, 0);
-  gtk_widget_show (yinput);
-  gtk_box_pack_start (GTK_BOX (hbox2), yinput, FALSE, TRUE, 0);
-  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (yinput), TRUE);
+  yvalue_adj = gtk_adjustment_new (1, 1, 438, 1, 10, 0);
+  yvalue = gtk_spin_button_new (GTK_ADJUSTMENT (yvalue_adj), 1, 0);
+  gtk_widget_show (yvalue);
+  gtk_box_pack_start (GTK_BOX (hbox2), yvalue, FALSE, TRUE, 0);
 
   add_point = gtk_button_new_with_mnemonic (_("Adicionar"));
   gtk_widget_show (add_point);
@@ -303,13 +302,13 @@ create_mainwindow (void)
   gtk_widget_show (vseparator1);
   gtk_box_pack_start (GTK_BOX (hbox2), vseparator1, FALSE, TRUE, 5);
 
-  togglebutton1 = gtk_toggle_button_new ();
-  gtk_widget_show (togglebutton1);
-  gtk_box_pack_start (GTK_BOX (hbox2), togglebutton1, FALSE, FALSE, 5);
+  play = gtk_toggle_button_new ();
+  gtk_widget_show (play);
+  gtk_box_pack_start (GTK_BOX (hbox2), play, FALSE, FALSE, 5);
 
   alignment1 = gtk_alignment_new (0.5, 0.5, 0, 0);
   gtk_widget_show (alignment1);
-  gtk_container_add (GTK_CONTAINER (togglebutton1), alignment1);
+  gtk_container_add (GTK_CONTAINER (play), alignment1);
 
   hbox3 = gtk_hbox_new (FALSE, 2);
   gtk_widget_show (hbox3);
@@ -384,8 +383,8 @@ create_mainwindow (void)
   g_signal_connect ((gpointer) color_robot, "activate",
                     G_CALLBACK (on_color_robot_activate),
                     NULL);
-  g_signal_connect ((gpointer) sobre, "activate",
-                    G_CALLBACK (on_sobre_activate),
+  g_signal_connect ((gpointer) about, "activate",
+                    G_CALLBACK (on_about_activate),
                     NULL);
   g_signal_connect ((gpointer) toolbar_new, "clicked",
                     G_CALLBACK (on_toolbar_new_clicked),
@@ -399,17 +398,8 @@ create_mainwindow (void)
   g_signal_connect ((gpointer) toolbar_record_poits, "toggled",
                     G_CALLBACK (on_toolbar_record_poits_toggled),
                     NULL);
-  g_signal_connect ((gpointer) toolbar_move, "clicked",
-                    G_CALLBACK (on_toolbar_move_clicked),
-                    NULL);
-  g_signal_connect ((gpointer) drawingarea, "expose_event",
-                    G_CALLBACK (on_drawingarea_expose_event),
-                    NULL);
-  g_signal_connect ((gpointer) drawingarea, "button_press_event",
-                    G_CALLBACK (on_drawingarea_button_press_event),
-                    NULL);
-  g_signal_connect ((gpointer) drawingarea, "motion_notify_event",
-                    G_CALLBACK (on_drawingarea_motion_notify_event),
+  g_signal_connect ((gpointer) toolbar_move, "toggled",
+                    G_CALLBACK (on_toolbar_move_toggled),
                     NULL);
   g_signal_connect ((gpointer) speedscale, "value_changed",
                     G_CALLBACK (on_speedscale_value_changed),
@@ -420,8 +410,8 @@ create_mainwindow (void)
   g_signal_connect ((gpointer) add_point, "clicked",
                     G_CALLBACK (on_add_point_clicked),
                     NULL);
-  g_signal_connect ((gpointer) togglebutton1, "toggled",
-                    G_CALLBACK (on_togglebutton1_toggled),
+  g_signal_connect ((gpointer) play, "toggled",
+                    G_CALLBACK (on_play_toggled),
                     NULL);
   g_signal_connect ((gpointer) next_step, "clicked",
                     G_CALLBACK (on_next_step_clicked),
@@ -452,7 +442,7 @@ create_mainwindow (void)
   GLADE_HOOKUP_OBJECT (mainwindow, color_robot, "color_robot");
   GLADE_HOOKUP_OBJECT (mainwindow, menuitem7, "menuitem7");
   GLADE_HOOKUP_OBJECT (mainwindow, menuitem7_menu, "menuitem7_menu");
-  GLADE_HOOKUP_OBJECT (mainwindow, sobre, "sobre");
+  GLADE_HOOKUP_OBJECT (mainwindow, about, "about");
   GLADE_HOOKUP_OBJECT (mainwindow, toolbar1, "toolbar1");
   GLADE_HOOKUP_OBJECT (mainwindow, toolbar_new, "toolbar_new");
   GLADE_HOOKUP_OBJECT (mainwindow, toolbar_open, "toolbar_open");
@@ -469,12 +459,12 @@ create_mainwindow (void)
   GLADE_HOOKUP_OBJECT (mainwindow, hseparator2, "hseparator2");
   GLADE_HOOKUP_OBJECT (mainwindow, hbox2, "hbox2");
   GLADE_HOOKUP_OBJECT (mainwindow, label2, "label2");
-  GLADE_HOOKUP_OBJECT (mainwindow, xinput, "xinput");
+  GLADE_HOOKUP_OBJECT (mainwindow, xvalue, "xvalue");
   GLADE_HOOKUP_OBJECT (mainwindow, label3, "label3");
-  GLADE_HOOKUP_OBJECT (mainwindow, yinput, "yinput");
+  GLADE_HOOKUP_OBJECT (mainwindow, yvalue, "yvalue");
   GLADE_HOOKUP_OBJECT (mainwindow, add_point, "add_point");
   GLADE_HOOKUP_OBJECT (mainwindow, vseparator1, "vseparator1");
-  GLADE_HOOKUP_OBJECT (mainwindow, togglebutton1, "togglebutton1");
+  GLADE_HOOKUP_OBJECT (mainwindow, play, "play");
   GLADE_HOOKUP_OBJECT (mainwindow, alignment1, "alignment1");
   GLADE_HOOKUP_OBJECT (mainwindow, hbox3, "hbox3");
   GLADE_HOOKUP_OBJECT (mainwindow, image1, "image1");
@@ -491,160 +481,5 @@ create_mainwindow (void)
   gtk_window_add_accel_group (GTK_WINDOW (mainwindow), accel_group);
 
   return mainwindow;
-}
-
-GtkWidget*
-create_colordialog (void)
-{
-  GtkWidget *colordialog;
-  GtkWidget *ok_button1;
-  GtkWidget *cancel_button1;
-  GtkWidget *help_button1;
-  GtkWidget *color_selection1;
-
-  colordialog = gtk_color_selection_dialog_new (_("Selecione a Cor"));
-  gtk_container_set_border_width (GTK_CONTAINER (colordialog), 5);
-  gtk_window_set_modal (GTK_WINDOW (colordialog), TRUE);
-  gtk_window_set_resizable (GTK_WINDOW (colordialog), FALSE);
-  gtk_window_set_type_hint (GTK_WINDOW (colordialog), GDK_WINDOW_TYPE_HINT_DIALOG);
-
-  ok_button1 = GTK_COLOR_SELECTION_DIALOG (colordialog)->ok_button;
-  gtk_widget_show (ok_button1);
-  GTK_WIDGET_SET_FLAGS (ok_button1, GTK_CAN_DEFAULT);
-
-  cancel_button1 = GTK_COLOR_SELECTION_DIALOG (colordialog)->cancel_button;
-  gtk_widget_show (cancel_button1);
-  GTK_WIDGET_SET_FLAGS (cancel_button1, GTK_CAN_DEFAULT);
-
-  help_button1 = GTK_COLOR_SELECTION_DIALOG (colordialog)->help_button;
-  gtk_widget_show (help_button1);
-  GTK_WIDGET_SET_FLAGS (help_button1, GTK_CAN_DEFAULT);
-
-  color_selection1 = GTK_COLOR_SELECTION_DIALOG (colordialog)->colorsel;
-  gtk_widget_show (color_selection1);
-  gtk_container_set_border_width (GTK_CONTAINER (color_selection1), 5);
-  gtk_color_selection_set_has_opacity_control (GTK_COLOR_SELECTION (color_selection1), FALSE);
-
-  /* Store pointers to all widgets, for use by lookup_widget(). */
-  GLADE_HOOKUP_OBJECT_NO_REF (colordialog, colordialog, "colordialog");
-  GLADE_HOOKUP_OBJECT_NO_REF (colordialog, ok_button1, "ok_button1");
-  GLADE_HOOKUP_OBJECT_NO_REF (colordialog, cancel_button1, "cancel_button1");
-  GLADE_HOOKUP_OBJECT_NO_REF (colordialog, help_button1, "help_button1");
-  GLADE_HOOKUP_OBJECT_NO_REF (colordialog, color_selection1, "color_selection1");
-
-  return colordialog;
-}
-
-GtkWidget*
-create_opendialog (void)
-{
-  GtkWidget *opendialog;
-  GtkWidget *dialog_vbox1;
-  GtkWidget *dialog_action_area1;
-  GtkWidget *button1;
-  GtkWidget *button2;
-
-  opendialog = gtk_file_chooser_dialog_new ("", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, NULL);
-  gtk_container_set_border_width (GTK_CONTAINER (opendialog), 5);
-  gtk_window_set_modal (GTK_WINDOW (opendialog), TRUE);
-  gtk_window_set_type_hint (GTK_WINDOW (opendialog), GDK_WINDOW_TYPE_HINT_DIALOG);
-
-  dialog_vbox1 = GTK_DIALOG (opendialog)->vbox;
-  gtk_widget_show (dialog_vbox1);
-
-  dialog_action_area1 = GTK_DIALOG (opendialog)->action_area;
-  gtk_widget_show (dialog_action_area1);
-  gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area1), GTK_BUTTONBOX_END);
-
-  button1 = gtk_button_new_from_stock ("gtk-cancel");
-  gtk_widget_show (button1);
-  gtk_dialog_add_action_widget (GTK_DIALOG (opendialog), button1, GTK_RESPONSE_CANCEL);
-  GTK_WIDGET_SET_FLAGS (button1, GTK_CAN_DEFAULT);
-
-  button2 = gtk_button_new_from_stock ("gtk-open");
-  gtk_widget_show (button2);
-  gtk_dialog_add_action_widget (GTK_DIALOG (opendialog), button2, GTK_RESPONSE_OK);
-  GTK_WIDGET_SET_FLAGS (button2, GTK_CAN_DEFAULT);
-
-  /* Store pointers to all widgets, for use by lookup_widget(). */
-  GLADE_HOOKUP_OBJECT_NO_REF (opendialog, opendialog, "opendialog");
-  GLADE_HOOKUP_OBJECT_NO_REF (opendialog, dialog_vbox1, "dialog_vbox1");
-  GLADE_HOOKUP_OBJECT_NO_REF (opendialog, dialog_action_area1, "dialog_action_area1");
-  GLADE_HOOKUP_OBJECT (opendialog, button1, "button1");
-  GLADE_HOOKUP_OBJECT (opendialog, button2, "button2");
-
-  gtk_widget_grab_default (button2);
-  return opendialog;
-}
-
-GtkWidget*
-create_savedialog (void)
-{
-  GtkWidget *savedialog;
-  GtkWidget *dialog_vbox2;
-  GtkWidget *dialog_action_area2;
-  GtkWidget *button3;
-  GtkWidget *button4;
-
-  savedialog = gtk_file_chooser_dialog_new ("", NULL, GTK_FILE_CHOOSER_ACTION_SAVE, NULL);
-  gtk_container_set_border_width (GTK_CONTAINER (savedialog), 5);
-  gtk_window_set_modal (GTK_WINDOW (savedialog), TRUE);
-  gtk_window_set_type_hint (GTK_WINDOW (savedialog), GDK_WINDOW_TYPE_HINT_DIALOG);
-
-  dialog_vbox2 = GTK_DIALOG (savedialog)->vbox;
-  gtk_widget_show (dialog_vbox2);
-
-  dialog_action_area2 = GTK_DIALOG (savedialog)->action_area;
-  gtk_widget_show (dialog_action_area2);
-  gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area2), GTK_BUTTONBOX_END);
-
-  button3 = gtk_button_new_from_stock ("gtk-cancel");
-  gtk_widget_show (button3);
-  gtk_dialog_add_action_widget (GTK_DIALOG (savedialog), button3, GTK_RESPONSE_CANCEL);
-  GTK_WIDGET_SET_FLAGS (button3, GTK_CAN_DEFAULT);
-
-  button4 = gtk_button_new_from_stock ("gtk-open");
-  gtk_widget_show (button4);
-  gtk_dialog_add_action_widget (GTK_DIALOG (savedialog), button4, GTK_RESPONSE_OK);
-  GTK_WIDGET_SET_FLAGS (button4, GTK_CAN_DEFAULT);
-
-  /* Store pointers to all widgets, for use by lookup_widget(). */
-  GLADE_HOOKUP_OBJECT_NO_REF (savedialog, savedialog, "savedialog");
-  GLADE_HOOKUP_OBJECT_NO_REF (savedialog, dialog_vbox2, "dialog_vbox2");
-  GLADE_HOOKUP_OBJECT_NO_REF (savedialog, dialog_action_area2, "dialog_action_area2");
-  GLADE_HOOKUP_OBJECT (savedialog, button3, "button3");
-  GLADE_HOOKUP_OBJECT (savedialog, button4, "button4");
-
-  gtk_widget_grab_default (button4);
-  return savedialog;
-}
-
-GtkWidget*
-create_aboutdialog (void)
-{
-  GtkWidget *aboutdialog;
-  const gchar *authors[] = {
-    "Rafael Crivellari Saliba Schouery",
-    NULL
-  };
-  /* TRANSLATORS: Replace this string with your names, one name per line. */
-  gchar *translators = _("translator-credits");
-  GdkPixbuf *aboutdialog_logo_pixbuf;
-
-  aboutdialog = gtk_about_dialog_new ();
-  gtk_container_set_border_width (GTK_CONTAINER (aboutdialog), 5);
-  gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (aboutdialog), VERSION);
-  gtk_about_dialog_set_name (GTK_ABOUT_DIALOG (aboutdialog), _("Robot Planning"));
-  gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (aboutdialog), "http://mafagrafos.com");
-  gtk_about_dialog_set_website_label (GTK_ABOUT_DIALOG (aboutdialog), _("Mafagrafos"));
-  gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG (aboutdialog), authors);
-  gtk_about_dialog_set_translator_credits (GTK_ABOUT_DIALOG (aboutdialog), translators);
-  aboutdialog_logo_pixbuf = create_pixbuf ("r2d2.png");
-  gtk_about_dialog_set_logo (GTK_ABOUT_DIALOG (aboutdialog), aboutdialog_logo_pixbuf);
-
-  /* Store pointers to all widgets, for use by lookup_widget(). */
-  GLADE_HOOKUP_OBJECT_NO_REF (aboutdialog, aboutdialog, "aboutdialog");
-
-  return aboutdialog;
 }
 
