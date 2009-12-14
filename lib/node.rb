@@ -1,5 +1,4 @@
 class Node
-  attr_accessor :left_child, :right_child
   attr_reader :left_child, :right_child
   attr_accessor :parents
 

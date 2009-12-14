@@ -19,4 +19,8 @@ class Point
   def to_a
     [@x, @y]
   end
+  
+  def dist2(other)
+    (@x - other.x)*(@x - other.x) + (@y - other.y)*(@y - other.y)
+  end
 end

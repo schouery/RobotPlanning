@@ -28,6 +28,11 @@ class Segment
   def right(c)
     (@finish.x - @start.x)*(c.y - @start.y) - (c.x - @start.x)*(@finish.y - @start.y) < 0
   end
+
+  def collinear(c)
+    (@finish.x - @start.x)*(c.y - @start.y) - (c.x - @start.x)*(@finish.y - @start.y) == 0
+  end
+
   
   def [](index)
     if index == 0

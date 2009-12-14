@@ -22,6 +22,46 @@ class SearchStructure
   def self.new_from_bounding_box(s1, s2, s3, s4)
     SearchStructure.new(TrapezoidNode.new(:leftp => s1.start, :rightp => s1.finish, :bottom => s1, :top => s3))
   end
+  
+  def solve_for_one(segment, cell, trapezoid, si, right, top, bottom)
+    left_collision = (trapezoid.leftp.x == segment.start.x)
+    right_collision = (segment.finish.x == trapezoid.rightp.x)      
+    if !left_collision    
+      pi = XNode.new(segment.start)
+      left = TrapezoidNode.new(:leftp => trapezoid.leftp,
+                               :rightp => segment.start,
+                               :top => trapezoid.top,
+                               :bottom => trapezoid.bottom)    
+      update_parents(cell, pi)
+      make_corner_neighbours(left, top, bottom, cell, :left)  
+    end
+      if !right_collision
+        right = TrapezoidNode.new(:leftp => segment.finish,
+                            :rightp => trapezoid.rightp,
+                            :top => trapezoid.top,
+                            :bottom => trapezoid.bottom)
+        qi = XNode.new(segment.finish)
+        qi.children = [si, right]
+        make_corner_neighbours(right, top, bottom, cell, :right)
+      end
+      if !left_collision
+        if !right_collision
+          pi.children = [left, qi]
+        else
+          pi.children = [left, si]
+          correct_neighbours_for_right_collision(segment, trapezoid, top, bottom, cell)
+        end
+      else
+        if right_collision
+          update_parents(cell,si)
+          correct_neighbours_for_left_collision(segment, trapezoid, top, bottom, cell)
+          correct_neighbours_for_right_collision(segment, trapezoid, top, bottom, cell)
+        else
+          update_parents(cell,qi)
+          correct_neighbours_for_left_collision(segment, trapezoid, top, bottom, cell)
+        end
+      end    
+  end
 
   def add(segment)
     segment = segment.new_left_to_right
@@ -34,77 +74,13 @@ class SearchStructure
     bottom = split(segment.start, right, segment, trapezoid, :bottom)
     si.children = [top,bottom]
     if last
-      left_collision = (trapezoid.leftp.x == segment.start.x)
-      right_collision = (segment.finish.x == trapezoid.rightp.x)      
-      if !left_collision    
-        pi = XNode.new(segment.start)
-        left = TrapezoidNode.new(:leftp => trapezoid.leftp,
-                                 :rightp => segment.start,
-                                 :top => trapezoid.top,
-                                 :bottom => trapezoid.bottom)    
-        update_parents(cell, pi)
-        make_corner_neighbours(left, top, bottom, cell, :left)  
-      end
-        if !right_collision
-          right = TrapezoidNode.new(:leftp => segment.finish,
-                              :rightp => trapezoid.rightp,
-                              :top => trapezoid.top,
-                              :bottom => trapezoid.bottom)
-          qi = XNode.new(segment.finish)
-          qi.children = [si, right]
-          make_corner_neighbours(right, top, bottom, cell, :right)
-        end
-        if !left_collision
-          if !right_collision
-            pi.children = [left, qi]
-          else
-            pi.children = [left, si]
-            if segment.finish == trapezoid.bottom_right_corner
-              top.right_neighbours = cell.right_neighbours
-              top.correct_neighbours(cell, :right)
-            elsif segment.finish == trapezoid.top_right_corner
-              bottom.right_neighbours = cell.right_neighbours
-              bottom.correct_neighbours(cell, :right)
-            else
-              #TODO
-              cell.right_neighbours.each do |r|
-                if r.trapezoid.bottom_left_corner.y >= segment.finish.y
-                  top.right_neighbours << l
-                else
-                  bottom.right_neighbours << l
-                end
-              end
-              top.correct_neighbours(cell, :right)
-              bottom.correct_neighbours(cell, :right)
-            end
-          end
-        else
-          if segment.start == trapezoid.bottom_left_corner          
-            top.left_neighbours = cell.left_neighbours
-            top.correct_neighbours(cell, :left)
-          elsif segment.start == trapezoid.top_left_corner
-            bottom.left_neighbours = cell.left_neighbours
-            bottom.correct_neighbours(cell, :left)        
-          else
-            # TODO
-            cell.left_neighbours.each do |l|
-              if l.trapezoid.bottom_right_corner.y >= segment.start.y
-                top.left_neighbours << l
-              else
-                bottom.left_neighbours << l
-              end
-            end
-            top.correct_neighbours(cell, :left)
-            bottom.correct_neighbours(cell, :left)
-          end
-          update_parents(cell,qi)
-        end
+      solve_for_one(segment, cell, trapezoid, si, right, top, bottom)
       return
     end
     if trapezoid.leftp.x == segment.start.x  
       update_parents(cell, si)
-      make_neighbours(bottom, top, cell, segment, :left)
-    else    
+      correct_neighbours_for_left_collision(segment, trapezoid, top, bottom, cell)
+    else
       pi = XNode.new(segment.start)
       left = TrapezoidNode.new(:leftp => trapezoid.leftp,
                                :rightp => segment.start,
@@ -114,8 +90,8 @@ class SearchStructure
       update_parents(cell, pi)
       make_corner_neighbours(left, top, bottom, cell, :left)
     end
-    make_neighbours(bottom, top, cell, segment, :right)
-    cell = cell.next_neighbour(segment)    
+    make_neighbours(bottom, top, cell, segment, :right, true)
+    cell = cell.next_neighbour(segment)
     while(!cell.nil? && cell.trapezoid.leftp.x < segment.finish.x)
       trapezoid = cell.trapezoid
       last = trapezoid.rightp.x >= segment.finish.x
@@ -126,12 +102,12 @@ class SearchStructure
       make_left_neighbours(bottom, old_bottom, top, old_top, cell, segment)
       si.children = [top, bottom]
       if !last
-        make_neighbours(bottom, top, cell, segment, :right)
+        make_neighbours(bottom, top, cell, segment, :right, true)
         update_parents(cell, si)
       else
         if trapezoid.rightp.x == segment.finish.x
           update_parents(cell, si)
-          make_neighbours(bottom, top, cell, segment, :right)
+          correct_neighbours_for_right_collision(segment, trapezoid, top, bottom, cell)
         else    
           right = TrapezoidNode.new(:leftp => segment.finish,
                               :rightp => trapezoid.rightp,
@@ -189,6 +165,7 @@ class SearchStructure
   def make_left_neighbours(bottom, old_bottom, top, old_top, cell, segment)
     if(old_bottom != bottom)
       bottom.left_neighbours = cell.split_neighbours(segment,:left)[0]
+      bottom.left_neighbours.shift
       bottom.correct_neighbours(cell, :left) 
       bottom.left_neighbours.unshift old_bottom
       old_bottom.right_neighbours.unshift bottom        
@@ -200,8 +177,14 @@ class SearchStructure
     end
   end
 
-  def make_neighbours(bottom, top, cell, segment, side)
-    bottom.right_neighbours, top.right_neighbours = cell.split_neighbours(segment, side)
+  def make_neighbours(bottom, top, cell, segment, side, shift_bottom = false)
+    if side == :right
+      bottom.right_neighbours, top.right_neighbours = cell.split_neighbours(segment, side)
+      bottom.right_neighbours.shift if shift_bottom
+    else
+      bottom.left_neighbours, top.left_neighbours = cell.split_neighbours(segment, side)
+      bottom.left_neighbours.shift if shift_bottom
+    end
     bottom.correct_neighbours(cell, side)
     top.correct_neighbours(cell, side)
   end
@@ -251,6 +234,46 @@ class SearchStructure
     else
       recursive_create_graph(node.left_child, g)
       recursive_create_graph(node.right_child, g)
+    end
+  end
+
+  def correct_neighbours_for_right_collision(segment, trapezoid, top, bottom, cell)
+    if segment.finish == trapezoid.bottom_right_corner
+      top.right_neighbours = cell.right_neighbours
+      top.correct_neighbours(cell, :right)
+    elsif segment.finish == trapezoid.top_right_corner
+      bottom.right_neighbours = cell.right_neighbours
+      bottom.correct_neighbours(cell, :right)
+    else
+      cell.right_neighbours.each do |r|
+        if r.trapezoid.bottom_left_corner.y >= segment.finish.y
+          top.right_neighbours << r
+        else
+          bottom.right_neighbours << r
+        end
+      end
+      top.correct_neighbours(cell, :right)
+      bottom.correct_neighbours(cell, :right)
+    end
+  end
+  
+  def correct_neighbours_for_left_collision(segment, trapezoid, top, bottom, cell)
+    if segment.start == trapezoid.bottom_left_corner
+      top.left_neighbours = cell.left_neighbours
+      top.correct_neighbours(cell, :left)
+    elsif segment.start == trapezoid.top_left_corner
+      bottom.left_neighbours = cell.left_neighbours
+      bottom.correct_neighbours(cell, :left)        
+    else
+      cell.left_neighbours.each do |l|
+        if l.trapezoid.bottom_right_corner.y >= segment.start.y
+          top.left_neighbours << l
+        else
+          bottom.left_neighbours << l
+        end
+      end
+      top.correct_neighbours(cell, :left)
+      bottom.correct_neighbours(cell, :left)
     end
   end
 

@@ -9,13 +9,25 @@ class Trapezoid
     @bottom = options[:bottom].new_left_to_right if options[:bottom]
     @top ||= Segment[Point[0,0], Point[0,0]]
     @bottom ||= Segment[Point[0,0], Point[0,0]]
-    
+    update
+  end
+  
+  def update
     @top_left_corner = @top.x_projection(@leftp)
     @top_right_corner = @top.x_projection(@rightp)
     @bottom_left_corner = @bottom.x_projection(@leftp)
-    @bottom_right_corner = @bottom.x_projection(@rightp)
-    
+    @bottom_right_corner = @bottom.x_projection(@rightp)    
     @center = calculate_center 
+  end
+  
+  def leftp=(p)
+    @leftp = p
+    update
+  end
+  
+  def rightp=(p)
+    @rightp = p
+    update
   end
   
   def ==(other)

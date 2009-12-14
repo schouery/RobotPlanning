@@ -30,12 +30,9 @@ class TrapezoidNode < Node
   end
   
   def next_neighbour(segment)
-    # andar por todos os right_neighbours, analisando se o segmento passa abaixo ou acima do ponto, leftp do trapezoid
-    next_cell = @right_neighbours[0]
-    @right_neighbours.each do |n|
-        next_cell = n if segment.left(n.trapezoid.bottom_left_corner)
+    @right_neighbours.find do |n|
+      segment.left(n.trapezoid.top_left_corner) && segment.right(n.trapezoid.bottom_left_corner)
     end
-    next_cell
   end
   
   def split_neighbours(segment, side)
@@ -48,7 +45,7 @@ class TrapezoidNode < Node
         bottom << n
       end
     end
-    bottom.shift
+    # bottom.shift
     [bottom, top]
   end
   
