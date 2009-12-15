@@ -179,3 +179,15 @@ on_toolbar_move_toggled                (GtkToggleToolButton *toggletoolbutton,
 void
 on_play_toggled                        (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
+
+void
+on_toolbar_next_step_clicked           (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+void
+on_add_point_clicked                   (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+void
+on_toolbar_generate_map_toggled        (GtkToggleToolButton *toggletoolbutton,
+                                        gpointer         user_data);

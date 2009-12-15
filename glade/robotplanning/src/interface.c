@@ -59,37 +59,32 @@ create_mainwindow (void)
   GtkWidget *toolbar_new;
   GtkWidget *toolbar_open;
   GtkWidget *toolbar_save;
+  GtkWidget *separatortoolitem2;
   GtkWidget *tmp_image;
-  GtkWidget *toolbar_record_poits;
+  GtkWidget *toolbar_record_points;
+  GtkWidget *toolbar_generate_map;
   GtkWidget *toolbar_move;
+  GtkWidget *toolbar_next_step;
+  GtkWidget *separatortoolitem3;
+  GtkWidget *toolitem1;
+  GtkWidget *label4;
+  GtkWidget *toolitem2;
+  GtkObject *xvalue_adj;
+  GtkWidget *xvalue;
+  GtkWidget *toolitem3;
+  GtkWidget *label5;
+  GtkWidget *toolitem4;
+  GtkObject *yvalue_adj;
+  GtkWidget *yvalue;
+  GtkWidget *add_point;
   GtkWidget *vbox2;
+  GtkWidget *eventbox;
   GtkWidget *drawingarea;
   GtkWidget *hseparator1;
   GtkWidget *hbox1;
   GtkWidget *label1;
   GtkWidget *speedscale;
   GtkWidget *stepbystep;
-  GtkWidget *hseparator2;
-  GtkWidget *hbox2;
-  GtkWidget *label2;
-  GtkObject *xvalue_adj;
-  GtkWidget *xvalue;
-  GtkWidget *label3;
-  GtkObject *yvalue_adj;
-  GtkWidget *yvalue;
-  GtkWidget *add_point;
-  GtkWidget *vseparator1;
-  GtkWidget *play;
-  GtkWidget *alignment1;
-  GtkWidget *hbox3;
-  GtkWidget *image1;
-  GtkWidget *label4;
-  GtkWidget *vseparator2;
-  GtkWidget *next_step;
-  GtkWidget *alignment2;
-  GtkWidget *hbox4;
-  GtkWidget *image2;
-  GtkWidget *label5;
   GtkWidget *statusbar;
   GtkAccelGroup *accel_group;
   GtkTooltips *tooltips;
@@ -220,30 +215,96 @@ create_mainwindow (void)
   gtk_container_add (GTK_CONTAINER (toolbar1), toolbar_save);
   gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbar_save), tooltips, _("Salvar"), NULL);
 
-  toolbar_record_poits = (GtkWidget*) gtk_toggle_tool_button_new ();
-  gtk_tool_button_set_label (GTK_TOOL_BUTTON (toolbar_record_poits), _("Adicionar Pontos"));
+  separatortoolitem2 = (GtkWidget*) gtk_separator_tool_item_new ();
+  gtk_widget_show (separatortoolitem2);
+  gtk_container_add (GTK_CONTAINER (toolbar1), separatortoolitem2);
+
+  toolbar_record_points = (GtkWidget*) gtk_toggle_tool_button_new ();
+  gtk_tool_button_set_label (GTK_TOOL_BUTTON (toolbar_record_points), _("Adicionar Pontos"));
   tmp_image = gtk_image_new_from_stock ("gtk-media-record", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
-  gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (toolbar_record_poits), tmp_image);
-  gtk_widget_show (toolbar_record_poits);
-  gtk_container_add (GTK_CONTAINER (toolbar1), toolbar_record_poits);
-  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbar_record_poits), tooltips, _("Adicionar Pontos"), NULL);
+  gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (toolbar_record_points), tmp_image);
+  gtk_widget_show (toolbar_record_points);
+  gtk_container_add (GTK_CONTAINER (toolbar1), toolbar_record_points);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbar_record_points), tooltips, _("Adicionar Pontos"), NULL);
+
+  toolbar_generate_map = (GtkWidget*) gtk_toggle_tool_button_new ();
+  gtk_tool_button_set_label (GTK_TOOL_BUTTON (toolbar_generate_map), _("Gerar Trapezoides"));
+  tmp_image = gtk_image_new_from_stock ("gtk-select-color", tmp_toolbar_icon_size);
+  gtk_widget_show (tmp_image);
+  gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (toolbar_generate_map), tmp_image);
+  gtk_widget_show (toolbar_generate_map);
+  gtk_container_add (GTK_CONTAINER (toolbar1), toolbar_generate_map);
 
   toolbar_move = (GtkWidget*) gtk_toggle_tool_button_new ();
   gtk_tool_button_set_label (GTK_TOOL_BUTTON (toolbar_move), "");
-  tmp_image = gtk_image_new_from_stock ("gtk-jump-to", tmp_toolbar_icon_size);
+  tmp_image = gtk_image_new_from_stock ("gtk-media-play", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (toolbar_move), tmp_image);
   gtk_widget_show (toolbar_move);
   gtk_container_add (GTK_CONTAINER (toolbar1), toolbar_move);
 
+  tmp_image = gtk_image_new_from_stock ("gtk-media-forward", tmp_toolbar_icon_size);
+  gtk_widget_show (tmp_image);
+  toolbar_next_step = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
+  gtk_widget_show (toolbar_next_step);
+  gtk_container_add (GTK_CONTAINER (toolbar1), toolbar_next_step);
+
+  separatortoolitem3 = (GtkWidget*) gtk_separator_tool_item_new ();
+  gtk_widget_show (separatortoolitem3);
+  gtk_container_add (GTK_CONTAINER (toolbar1), separatortoolitem3);
+
+  toolitem1 = (GtkWidget*) gtk_tool_item_new ();
+  gtk_widget_show (toolitem1);
+  gtk_container_add (GTK_CONTAINER (toolbar1), toolitem1);
+
+  label4 = gtk_label_new (_("X: "));
+  gtk_widget_show (label4);
+  gtk_container_add (GTK_CONTAINER (toolitem1), label4);
+
+  toolitem2 = (GtkWidget*) gtk_tool_item_new ();
+  gtk_widget_show (toolitem2);
+  gtk_container_add (GTK_CONTAINER (toolbar1), toolitem2);
+
+  xvalue_adj = gtk_adjustment_new (1, 1, 799, 1, 10, 0);
+  xvalue = gtk_spin_button_new (GTK_ADJUSTMENT (xvalue_adj), 1, 0);
+  gtk_widget_show (xvalue);
+  gtk_container_add (GTK_CONTAINER (toolitem2), xvalue);
+
+  toolitem3 = (GtkWidget*) gtk_tool_item_new ();
+  gtk_widget_show (toolitem3);
+  gtk_container_add (GTK_CONTAINER (toolbar1), toolitem3);
+
+  label5 = gtk_label_new (_("Y: "));
+  gtk_widget_show (label5);
+  gtk_container_add (GTK_CONTAINER (toolitem3), label5);
+
+  toolitem4 = (GtkWidget*) gtk_tool_item_new ();
+  gtk_widget_show (toolitem4);
+  gtk_container_add (GTK_CONTAINER (toolbar1), toolitem4);
+
+  yvalue_adj = gtk_adjustment_new (1, 1, 438, 1, 10, 0);
+  yvalue = gtk_spin_button_new (GTK_ADJUSTMENT (yvalue_adj), 1, 0);
+  gtk_widget_show (yvalue);
+  gtk_container_add (GTK_CONTAINER (toolitem4), yvalue);
+
+  tmp_image = gtk_image_new_from_stock ("gtk-add", tmp_toolbar_icon_size);
+  gtk_widget_show (tmp_image);
+  add_point = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Adicionar"));
+  gtk_widget_show (add_point);
+  gtk_container_add (GTK_CONTAINER (toolbar1), add_point);
+
   vbox2 = gtk_vbox_new (FALSE, 0);
   gtk_widget_show (vbox2);
   gtk_box_pack_start (GTK_BOX (vbox1), vbox2, TRUE, TRUE, 0);
 
+  eventbox = gtk_event_box_new ();
+  gtk_widget_show (eventbox);
+  gtk_box_pack_start (GTK_BOX (vbox2), eventbox, TRUE, TRUE, 0);
+
   drawingarea = gtk_drawing_area_new ();
   gtk_widget_show (drawingarea);
-  gtk_box_pack_start (GTK_BOX (vbox2), drawingarea, TRUE, TRUE, 0);
+  gtk_container_add (GTK_CONTAINER (eventbox), drawingarea);
 
   hseparator1 = gtk_hseparator_new ();
   gtk_widget_show (hseparator1);
@@ -258,93 +319,16 @@ create_mainwindow (void)
   gtk_widget_show (label1);
   gtk_box_pack_start (GTK_BOX (hbox1), label1, FALSE, FALSE, 0);
 
-  speedscale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (1, 1, 100, 1, 10, 0)));
+  speedscale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (100, 1, 100, 1, 10, 0)));
   gtk_widget_show (speedscale);
   gtk_box_pack_start (GTK_BOX (hbox1), speedscale, TRUE, TRUE, 0);
   gtk_scale_set_draw_value (GTK_SCALE (speedscale), FALSE);
+  gtk_range_set_update_policy (GTK_RANGE (speedscale), GTK_UPDATE_DISCONTINUOUS);
+  gtk_range_set_inverted (GTK_RANGE (speedscale), TRUE);
 
   stepbystep = gtk_check_button_new_with_mnemonic (_("Passo a Passo"));
   gtk_widget_show (stepbystep);
   gtk_box_pack_start (GTK_BOX (hbox1), stepbystep, FALSE, FALSE, 0);
-
-  hseparator2 = gtk_hseparator_new ();
-  gtk_widget_show (hseparator2);
-  gtk_box_pack_start (GTK_BOX (vbox2), hseparator2, FALSE, TRUE, 0);
-
-  hbox2 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_show (hbox2);
-  gtk_box_pack_start (GTK_BOX (vbox2), hbox2, FALSE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (hbox2), 5);
-
-  label2 = gtk_label_new (_("X: "));
-  gtk_widget_show (label2);
-  gtk_box_pack_start (GTK_BOX (hbox2), label2, FALSE, FALSE, 5);
-
-  xvalue_adj = gtk_adjustment_new (1, 1, 799, 1, 10, 0);
-  xvalue = gtk_spin_button_new (GTK_ADJUSTMENT (xvalue_adj), 1, 0);
-  gtk_widget_show (xvalue);
-  gtk_box_pack_start (GTK_BOX (hbox2), xvalue, FALSE, TRUE, 0);
-
-  label3 = gtk_label_new (_("Y: "));
-  gtk_widget_show (label3);
-  gtk_box_pack_start (GTK_BOX (hbox2), label3, FALSE, FALSE, 5);
-
-  yvalue_adj = gtk_adjustment_new (1, 1, 438, 1, 10, 0);
-  yvalue = gtk_spin_button_new (GTK_ADJUSTMENT (yvalue_adj), 1, 0);
-  gtk_widget_show (yvalue);
-  gtk_box_pack_start (GTK_BOX (hbox2), yvalue, FALSE, TRUE, 0);
-
-  add_point = gtk_button_new_with_mnemonic (_("Adicionar"));
-  gtk_widget_show (add_point);
-  gtk_box_pack_start (GTK_BOX (hbox2), add_point, FALSE, FALSE, 3);
-
-  vseparator1 = gtk_vseparator_new ();
-  gtk_widget_show (vseparator1);
-  gtk_box_pack_start (GTK_BOX (hbox2), vseparator1, FALSE, TRUE, 5);
-
-  play = gtk_toggle_button_new ();
-  gtk_widget_show (play);
-  gtk_box_pack_start (GTK_BOX (hbox2), play, FALSE, FALSE, 5);
-
-  alignment1 = gtk_alignment_new (0.5, 0.5, 0, 0);
-  gtk_widget_show (alignment1);
-  gtk_container_add (GTK_CONTAINER (play), alignment1);
-
-  hbox3 = gtk_hbox_new (FALSE, 2);
-  gtk_widget_show (hbox3);
-  gtk_container_add (GTK_CONTAINER (alignment1), hbox3);
-
-  image1 = gtk_image_new_from_stock ("gtk-media-next", GTK_ICON_SIZE_BUTTON);
-  gtk_widget_show (image1);
-  gtk_box_pack_start (GTK_BOX (hbox3), image1, FALSE, FALSE, 0);
-
-  label4 = gtk_label_new_with_mnemonic (_("Reproduzir"));
-  gtk_widget_show (label4);
-  gtk_box_pack_start (GTK_BOX (hbox3), label4, FALSE, FALSE, 0);
-
-  vseparator2 = gtk_vseparator_new ();
-  gtk_widget_show (vseparator2);
-  gtk_box_pack_start (GTK_BOX (hbox2), vseparator2, FALSE, FALSE, 5);
-
-  next_step = gtk_button_new ();
-  gtk_widget_show (next_step);
-  gtk_box_pack_start (GTK_BOX (hbox2), next_step, FALSE, FALSE, 5);
-
-  alignment2 = gtk_alignment_new (0.5, 0.5, 0, 0);
-  gtk_widget_show (alignment2);
-  gtk_container_add (GTK_CONTAINER (next_step), alignment2);
-
-  hbox4 = gtk_hbox_new (FALSE, 2);
-  gtk_widget_show (hbox4);
-  gtk_container_add (GTK_CONTAINER (alignment2), hbox4);
-
-  image2 = gtk_image_new_from_stock ("gtk-media-forward", GTK_ICON_SIZE_BUTTON);
-  gtk_widget_show (image2);
-  gtk_box_pack_start (GTK_BOX (hbox4), image2, FALSE, FALSE, 0);
-
-  label5 = gtk_label_new_with_mnemonic (_("Pr\303\263ximo Passo"));
-  gtk_widget_show (label5);
-  gtk_box_pack_start (GTK_BOX (hbox4), label5, FALSE, FALSE, 0);
 
   statusbar = gtk_statusbar_new ();
   gtk_widget_show (statusbar);
@@ -395,26 +379,26 @@ create_mainwindow (void)
   g_signal_connect ((gpointer) toolbar_save, "clicked",
                     G_CALLBACK (on_toolbar_save_clicked),
                     NULL);
-  g_signal_connect ((gpointer) toolbar_record_poits, "toggled",
+  g_signal_connect ((gpointer) toolbar_record_points, "toggled",
                     G_CALLBACK (on_toolbar_record_poits_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) toolbar_generate_map, "toggled",
+                    G_CALLBACK (on_toolbar_generate_map_toggled),
                     NULL);
   g_signal_connect ((gpointer) toolbar_move, "toggled",
                     G_CALLBACK (on_toolbar_move_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) toolbar_next_step, "clicked",
+                    G_CALLBACK (on_toolbar_next_step_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) add_point, "clicked",
+                    G_CALLBACK (on_add_point_clicked),
                     NULL);
   g_signal_connect ((gpointer) speedscale, "value_changed",
                     G_CALLBACK (on_speedscale_value_changed),
                     NULL);
   g_signal_connect ((gpointer) stepbystep, "toggled",
                     G_CALLBACK (on_stepbystep_toggled),
-                    NULL);
-  g_signal_connect ((gpointer) add_point, "clicked",
-                    G_CALLBACK (on_add_point_clicked),
-                    NULL);
-  g_signal_connect ((gpointer) play, "toggled",
-                    G_CALLBACK (on_play_toggled),
-                    NULL);
-  g_signal_connect ((gpointer) next_step, "clicked",
-                    G_CALLBACK (on_next_step_clicked),
                     NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -447,34 +431,29 @@ create_mainwindow (void)
   GLADE_HOOKUP_OBJECT (mainwindow, toolbar_new, "toolbar_new");
   GLADE_HOOKUP_OBJECT (mainwindow, toolbar_open, "toolbar_open");
   GLADE_HOOKUP_OBJECT (mainwindow, toolbar_save, "toolbar_save");
-  GLADE_HOOKUP_OBJECT (mainwindow, toolbar_record_poits, "toolbar_record_poits");
+  GLADE_HOOKUP_OBJECT (mainwindow, separatortoolitem2, "separatortoolitem2");
+  GLADE_HOOKUP_OBJECT (mainwindow, toolbar_record_points, "toolbar_record_points");
+  GLADE_HOOKUP_OBJECT (mainwindow, toolbar_generate_map, "toolbar_generate_map");
   GLADE_HOOKUP_OBJECT (mainwindow, toolbar_move, "toolbar_move");
+  GLADE_HOOKUP_OBJECT (mainwindow, toolbar_next_step, "toolbar_next_step");
+  GLADE_HOOKUP_OBJECT (mainwindow, separatortoolitem3, "separatortoolitem3");
+  GLADE_HOOKUP_OBJECT (mainwindow, toolitem1, "toolitem1");
+  GLADE_HOOKUP_OBJECT (mainwindow, label4, "label4");
+  GLADE_HOOKUP_OBJECT (mainwindow, toolitem2, "toolitem2");
+  GLADE_HOOKUP_OBJECT (mainwindow, xvalue, "xvalue");
+  GLADE_HOOKUP_OBJECT (mainwindow, toolitem3, "toolitem3");
+  GLADE_HOOKUP_OBJECT (mainwindow, label5, "label5");
+  GLADE_HOOKUP_OBJECT (mainwindow, toolitem4, "toolitem4");
+  GLADE_HOOKUP_OBJECT (mainwindow, yvalue, "yvalue");
+  GLADE_HOOKUP_OBJECT (mainwindow, add_point, "add_point");
   GLADE_HOOKUP_OBJECT (mainwindow, vbox2, "vbox2");
+  GLADE_HOOKUP_OBJECT (mainwindow, eventbox, "eventbox");
   GLADE_HOOKUP_OBJECT (mainwindow, drawingarea, "drawingarea");
   GLADE_HOOKUP_OBJECT (mainwindow, hseparator1, "hseparator1");
   GLADE_HOOKUP_OBJECT (mainwindow, hbox1, "hbox1");
   GLADE_HOOKUP_OBJECT (mainwindow, label1, "label1");
   GLADE_HOOKUP_OBJECT (mainwindow, speedscale, "speedscale");
   GLADE_HOOKUP_OBJECT (mainwindow, stepbystep, "stepbystep");
-  GLADE_HOOKUP_OBJECT (mainwindow, hseparator2, "hseparator2");
-  GLADE_HOOKUP_OBJECT (mainwindow, hbox2, "hbox2");
-  GLADE_HOOKUP_OBJECT (mainwindow, label2, "label2");
-  GLADE_HOOKUP_OBJECT (mainwindow, xvalue, "xvalue");
-  GLADE_HOOKUP_OBJECT (mainwindow, label3, "label3");
-  GLADE_HOOKUP_OBJECT (mainwindow, yvalue, "yvalue");
-  GLADE_HOOKUP_OBJECT (mainwindow, add_point, "add_point");
-  GLADE_HOOKUP_OBJECT (mainwindow, vseparator1, "vseparator1");
-  GLADE_HOOKUP_OBJECT (mainwindow, play, "play");
-  GLADE_HOOKUP_OBJECT (mainwindow, alignment1, "alignment1");
-  GLADE_HOOKUP_OBJECT (mainwindow, hbox3, "hbox3");
-  GLADE_HOOKUP_OBJECT (mainwindow, image1, "image1");
-  GLADE_HOOKUP_OBJECT (mainwindow, label4, "label4");
-  GLADE_HOOKUP_OBJECT (mainwindow, vseparator2, "vseparator2");
-  GLADE_HOOKUP_OBJECT (mainwindow, next_step, "next_step");
-  GLADE_HOOKUP_OBJECT (mainwindow, alignment2, "alignment2");
-  GLADE_HOOKUP_OBJECT (mainwindow, hbox4, "hbox4");
-  GLADE_HOOKUP_OBJECT (mainwindow, image2, "image2");
-  GLADE_HOOKUP_OBJECT (mainwindow, label5, "label5");
   GLADE_HOOKUP_OBJECT (mainwindow, statusbar, "statusbar");
   GLADE_HOOKUP_OBJECT_NO_REF (mainwindow, tooltips, "tooltips");
 

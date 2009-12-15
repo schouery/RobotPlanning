@@ -18,4 +18,8 @@ class Drawer
     @drawing_area.draw_polygon(@gc, filled, points)
   end
   
+  def clear
+    @drawing_area.clear
+  end
+  
 end

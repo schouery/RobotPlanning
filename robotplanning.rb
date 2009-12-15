@@ -23,7 +23,8 @@ PROG_NAME = "Robot Planning"
 
 class RobotplanningGlade
   include GetText
-
+  MAXX = 799
+  MAXY = 438
   attr :glade
   
   # Creates tooltips.
@@ -32,7 +33,7 @@ class RobotplanningGlade
     @glade['toolbar_new'].set_tooltip(@tooltip, _('Novo'))
     @glade['toolbar_open'].set_tooltip(@tooltip, _('Abrir'))
     @glade['toolbar_save'].set_tooltip(@tooltip, _('Salvar'))
-    @glade['toolbar_record_poits'].set_tooltip(@tooltip, _('Adicionar Pontos'))
+    @glade['toolbar_record_points'].set_tooltip(@tooltip, _('Adicionar Pontos'))
     @glade['toolbar_move'].set_tooltip(@tooltip, _('Mover Robô'))
   end
   
@@ -40,32 +41,47 @@ class RobotplanningGlade
     bindtextdomain(domain, localedir, nil, "UTF-8")
     @glade = GladeXML.new(path_or_data, root, domain, localedir, flag) {|handler| method(handler)}
     @drawer = Drawer.new(@glade['drawingarea'].window)
+    @planning = Planning.new(@drawer, @glade['toolbar_generate_map'])
     @open_dialog = OpenDialog.new self.method(:open)
     @save_dialog = SaveDialog.new self.method(:save)
     @show_graph = true
     @show_trapezoids = true
     clean
-    @glade['drawingarea'].signal_connect("button_press_event")   { |w,e| puts "HERE"}
-    @glade['drawingarea'].set_events(Gdk::Event::BUTTON_PRESS_MASK)
+    @glade['drawingarea'].signal_connect('expose_event')   { print }
+    eventbox = @glade['eventbox']
+    eventbox.events = Gdk::Event::BUTTON_PRESS_MASK
+    eventbox.signal_connect('button_press_event') {|w, e| add_point(Point[e.x.to_i, e.y.to_i])}
     @glade['mainwindow'].signal_connect('destroy'){Gtk.main_quit}
     create_tooltips
+    @glade['toolbar_save'].sensitive = false
   end
   
-  def temp
-    @planning = Planning.new(@segments, 800, 439)
-    print
+  def add_point(point)
+    return if point.x < 1 || point.y < 1 || point.x > MAXX-1 || point.y > MAXY-1
+    if @record_movement
+      if @first_point
+        @start = point
+        @first_point = false
+      else
+        @finish = point
+        @planning.locate(@start, @finish, @drawer)
+        @glade['toolbar_move'].active = @record_movement = false
+      end
+    elsif @record_points
+      @points << point
+    end
   end
   
   def clean
     # rearranjar botões e booleans
     @first_point = true
     @record_points = false
-    @glade['toolbar_record_poits'].active = false
+    @glade['toolbar_record_points'].active = false
     @glade['toolbar_move'].active = false
     @record_movement = false
     @current_file = nil
     @segments = []
-    @planning = nil
+    @planning.clear
     @glade['mainwindow'].title = PROG_NAME
   end
   
@@ -96,10 +112,9 @@ class RobotplanningGlade
   end
   
   def print
-    if @planning
-      @planning.draw_ss(@drawer) if @show_trapezoids
-      @planning.draw_graph(@drawer) if @show_graph
-    end
+    @drawer.clear
+    @planning.draw_ss if @show_trapezoids
+    @planning.draw_graph if @show_graph
     @segments.each do |s|
       s.draw(@drawer)
     end
@@ -160,12 +175,12 @@ class RobotplanningGlade
   #Start reading point to make the convex hull
   def on_toolbar_record_poits_toggled(widget)
     if @record_movement
-      @glade['toolbar_record_poits'].active = false    
+      @glade['toolbar_record_points'].active = false    
     else      
       @record_points = !@record_points
       @points = [] if @record_points
       if !@record_points
-        @planning = nil
+        @planning.clear
         @segments += ConvexHull.generate(@points)
         print
       end
@@ -174,18 +189,7 @@ class RobotplanningGlade
   
   #depends on the current active action
   def on_add_point_clicked(widget)
-    if @record_movement
-      if @first_point
-        @start = Point[@glade['xvalue'].text.to_i, @glade['yvalue'].text.to_i]
-        @first_point = false
-      else
-        @finish = Point[@glade['xvalue'].text.to_i, @glade['yvalue'].text.to_i]
-        @planning.locate(@start, @finish, @drawer)
-        @glade['toolbar_move'].active = @record_movement = false
-      end
-    elsif @record_points
-      @points << Point[@glade['xvalue'].text.to_i, @glade['yvalue'].text.to_i]
-    end
+    add_point(Point[@glade['xvalue'].text.to_i, @glade['yvalue'].text.to_i])
   end
     
   def on_show_graph_activate(widget)
@@ -197,24 +201,22 @@ class RobotplanningGlade
   end
 
   # Funções de Animação
-  #play buttom
-  def on_play_toggled(widget)
-    puts "on_togglebutton1_toggled() is not implemented yet."
-  end
-
   def on_speedscale_value_changed(widget)
-    puts "on_speedscale_value_changed() is not implemented yet."
+    @planning.speed = glade['speedscale'].value
   end
 
-  def on_next_step_clicked(widget)
+  def on_toolbar_next_step_clicked(widget)
     puts "on_next_step_clicked() is not implemented yet."
-    temp
   end
 
   def on_stepbystep_toggled(widget)
-    puts "on_stepbystep_toggled() is not implemented yet."
+    @planning.change_step_by_step
   end
 
+  def on_toolbar_generate_map_toggled(widget)
+    @planning.start(@segments, MAXX, MAXY) if !@planning.playing
+  end
+  
   #Funções de menu
   def on_color_segments_activate(widget)
     puts "on_color_segments_activate() is not implemented yet."
