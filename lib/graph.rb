@@ -22,15 +22,15 @@ module Graph
     def path(start, finish)
       @visited, @parent = [], []
       @path_found = []
-      # return nil if dfsR(start, finish).nil?
-      return nil if pfs(start, finish).nil?
+      return nil if dfsR(start, finish).nil?
+      # return nil if pfs(start, finish).nil?
       construct_path(finish.index)
       @path_found
     end
     
     def construct_path(i)
       construct_path(@parent[i]) if !@parent[i].nil?
-      @path_found << @nodes[i]
+      @path_found << @nodes[i].point
     end
     
     def dfsR(nu, finish)
@@ -140,6 +140,10 @@ module Graph
     
     def first_priority
       @priority[@list[0]]
+    end
+    
+    def inspect
+      "Graph::Vertice: #{@point.inspect}"
     end
   end
 end

@@ -4,6 +4,8 @@ require 'lib/point'
 class ConvexHull
   #Graham
   def self.generate(points)
+    return [] if points.size < 2
+    return [Segment[points[0], points[1]]] if points.size == 2 && points[0] != points[1]
     points = points.dup
     min = 0
     points.each_with_index do |p, i|
@@ -18,12 +20,14 @@ class ConvexHull
         1
       end
     end
-    p points
     h = [ini]
     h << points.shift
-    points.shift while(Segment[h[0], h[1]].collinear(points[0]))
+    points.shift while(!points.empty? && Segment[h[0], h[1]].collinear(points[0]))
+    if points.empty?
+      return [Segment[h[0], h[1]]] if h[0] != h[1]
+      return []
+    end
     h << points.shift    
-    p h
     points.each do |p|
       while(!Segment[h[h.size-2],h[h.size-1]].left(p))
         h.pop
