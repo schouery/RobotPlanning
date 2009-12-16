@@ -191,3 +191,23 @@ on_add_point_clicked                   (GtkToolButton   *toolbutton,
 void
 on_toolbar_generate_map_toggled        (GtkToggleToolButton *toggletoolbutton,
                                         gpointer         user_data);
+
+void
+on_robot_line_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_trapezoids_segments_activate        (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_robot_line_color_activate           (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_new_trapezoides_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_destroied_trapezoids_activate       (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>add (SearchStructure)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/trapezoidal_maps.rb, line 88</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">add</span>(<span class="ruby-identifier">segment</span>)
+    <span class="ruby-ivar">@new_trapezoids</span> = []    
+    <span class="ruby-identifier">segment</span> = <span class="ruby-identifier">segment</span>.<span class="ruby-identifier">new_left_to_right</span>
+    <span class="ruby-identifier">cell</span> = <span class="ruby-identifier">find</span>(<span class="ruby-identifier">segment</span>, <span class="ruby-identifier">:segment</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">true</span>)
+    <span class="ruby-identifier">trapezoid</span> = <span class="ruby-identifier">cell</span>.<span class="ruby-identifier">trapezoid</span>
+    <span class="ruby-identifier">si</span> = <span class="ruby-constant">YNode</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">segment</span>)
+    <span class="ruby-identifier">last</span> = <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">rightp</span>.<span class="ruby-identifier">x</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-identifier">segment</span>.<span class="ruby-identifier">finish</span>.<span class="ruby-identifier">x</span> 
+    <span class="ruby-identifier">right</span> = <span class="ruby-identifier">last</span> <span class="ruby-value">? </span><span class="ruby-identifier">segment</span>.<span class="ruby-identifier">finish</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">rightp</span>
+    <span class="ruby-identifier">top</span> = <span class="ruby-identifier">split</span>(<span class="ruby-identifier">segment</span>.<span class="ruby-identifier">start</span>, <span class="ruby-identifier">right</span>, <span class="ruby-identifier">segment</span>, <span class="ruby-identifier">trapezoid</span>, <span class="ruby-identifier">:top</span>)
+    <span class="ruby-identifier">bottom</span> = <span class="ruby-identifier">split</span>(<span class="ruby-identifier">segment</span>.<span class="ruby-identifier">start</span>, <span class="ruby-identifier">right</span>, <span class="ruby-identifier">segment</span>, <span class="ruby-identifier">trapezoid</span>, <span class="ruby-identifier">:bottom</span>)
+    <span class="ruby-ivar">@new_trapezoids</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">top</span>
+    <span class="ruby-ivar">@new_trapezoids</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">bottom</span>
+    <span class="ruby-identifier">si</span>.<span class="ruby-identifier">children</span> = [<span class="ruby-identifier">top</span>,<span class="ruby-identifier">bottom</span>]
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">last</span>
+      <span class="ruby-identifier">solve_for_one</span>(<span class="ruby-identifier">segment</span>, <span class="ruby-identifier">cell</span>, <span class="ruby-identifier">trapezoid</span>, <span class="ruby-identifier">si</span>, <span class="ruby-identifier">right</span>, <span class="ruby-identifier">top</span>, <span class="ruby-identifier">bottom</span>)
+      <span class="ruby-keyword kw">return</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">leftp</span>.<span class="ruby-identifier">x</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">segment</span>.<span class="ruby-identifier">start</span>.<span class="ruby-identifier">x</span>  
+      <span class="ruby-identifier">update_parents</span>(<span class="ruby-identifier">cell</span>, <span class="ruby-identifier">si</span>)
+      <span class="ruby-identifier">correct_neighbours_for_left_collision</span>(<span class="ruby-identifier">segment</span>, <span class="ruby-identifier">trapezoid</span>, <span class="ruby-identifier">top</span>, <span class="ruby-identifier">bottom</span>, <span class="ruby-identifier">cell</span>)
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-identifier">pi</span> = <span class="ruby-constant">XNode</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">segment</span>.<span class="ruby-identifier">start</span>)
+      <span class="ruby-identifier">left</span> = <span class="ruby-constant">TrapezoidNode</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">:leftp</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">leftp</span>,
+                               <span class="ruby-identifier">:rightp</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">segment</span>.<span class="ruby-identifier">start</span>,
+                               <span class="ruby-identifier">:top</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">top</span>,
+                               <span class="ruby-identifier">:bottom</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">bottom</span>)    
+      <span class="ruby-ivar">@new_trapezoids</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">left</span>
+      <span class="ruby-identifier">pi</span>.<span class="ruby-identifier">children</span> = [<span class="ruby-identifier">left</span>, <span class="ruby-identifier">si</span>]
+      <span class="ruby-identifier">update_parents</span>(<span class="ruby-identifier">cell</span>, <span class="ruby-identifier">pi</span>)
+      <span class="ruby-identifier">make_corner_neighbours</span>(<span class="ruby-identifier">left</span>, <span class="ruby-identifier">top</span>, <span class="ruby-identifier">bottom</span>, <span class="ruby-identifier">cell</span>, <span class="ruby-identifier">:left</span>)
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">make_neighbours</span>(<span class="ruby-identifier">bottom</span>, <span class="ruby-identifier">top</span>, <span class="ruby-identifier">cell</span>, <span class="ruby-identifier">segment</span>, <span class="ruby-identifier">:right</span>, <span class="ruby-keyword kw">true</span>)
+    <span class="ruby-identifier">cell</span> = <span class="ruby-identifier">cell</span>.<span class="ruby-identifier">next_neighbour</span>(<span class="ruby-identifier">segment</span>)
+    <span class="ruby-keyword kw">while</span>(<span class="ruby-operator">!</span><span class="ruby-identifier">cell</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">cell</span>.<span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">leftp</span>.<span class="ruby-identifier">x</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">segment</span>.<span class="ruby-identifier">finish</span>.<span class="ruby-identifier">x</span>)
+      <span class="ruby-identifier">trapezoid</span> = <span class="ruby-identifier">cell</span>.<span class="ruby-identifier">trapezoid</span>
+      <span class="ruby-identifier">last</span> = <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">rightp</span>.<span class="ruby-identifier">x</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-identifier">segment</span>.<span class="ruby-identifier">finish</span>.<span class="ruby-identifier">x</span>
+      <span class="ruby-identifier">right</span> = <span class="ruby-identifier">last</span> <span class="ruby-value">? </span><span class="ruby-identifier">segment</span>.<span class="ruby-identifier">finish</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">rightp</span>
+      <span class="ruby-identifier">si</span> = <span class="ruby-constant">YNode</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">segment</span>)
+      <span class="ruby-identifier">old_bottom</span>, <span class="ruby-identifier">old_top</span> = <span class="ruby-identifier">bottom</span>, <span class="ruby-identifier">top</span>
+      <span class="ruby-identifier">bottom</span>, <span class="ruby-identifier">top</span> = <span class="ruby-identifier">merge</span>(<span class="ruby-identifier">segment</span>, <span class="ruby-identifier">trapezoid</span>, <span class="ruby-identifier">bottom</span>, <span class="ruby-identifier">top</span>, <span class="ruby-identifier">right</span>)
+      <span class="ruby-ivar">@new_trapezoids</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">bottom</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">bottom</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">old_bottom</span>
+      <span class="ruby-ivar">@new_trapezoids</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">top</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">top</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">top</span>
+      <span class="ruby-identifier">make_left_neighbours</span>(<span class="ruby-identifier">bottom</span>, <span class="ruby-identifier">old_bottom</span>, <span class="ruby-identifier">top</span>, <span class="ruby-identifier">old_top</span>, <span class="ruby-identifier">cell</span>, <span class="ruby-identifier">segment</span>)
+      <span class="ruby-identifier">si</span>.<span class="ruby-identifier">children</span> = [<span class="ruby-identifier">top</span>, <span class="ruby-identifier">bottom</span>]
+      <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">last</span>
+        <span class="ruby-identifier">make_neighbours</span>(<span class="ruby-identifier">bottom</span>, <span class="ruby-identifier">top</span>, <span class="ruby-identifier">cell</span>, <span class="ruby-identifier">segment</span>, <span class="ruby-identifier">:right</span>, <span class="ruby-keyword kw">true</span>)
+        <span class="ruby-identifier">update_parents</span>(<span class="ruby-identifier">cell</span>, <span class="ruby-identifier">si</span>)
+      <span class="ruby-keyword kw">else</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">rightp</span>.<span class="ruby-identifier">x</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">segment</span>.<span class="ruby-identifier">finish</span>.<span class="ruby-identifier">x</span>
+          <span class="ruby-identifier">update_parents</span>(<span class="ruby-identifier">cell</span>, <span class="ruby-identifier">si</span>)
+          <span class="ruby-identifier">correct_neighbours_for_right_collision</span>(<span class="ruby-identifier">segment</span>, <span class="ruby-identifier">trapezoid</span>, <span class="ruby-identifier">top</span>, <span class="ruby-identifier">bottom</span>, <span class="ruby-identifier">cell</span>)
+        <span class="ruby-keyword kw">else</span>    
+          <span class="ruby-identifier">right</span> = <span class="ruby-constant">TrapezoidNode</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">:leftp</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">segment</span>.<span class="ruby-identifier">finish</span>,
+                              <span class="ruby-identifier">:rightp</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">rightp</span>,
+                              <span class="ruby-identifier">:top</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">top</span>,
+                              <span class="ruby-identifier">:bottom</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">bottom</span>)
+          <span class="ruby-ivar">@new_trapezoids</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">right</span>
+          <span class="ruby-identifier">qi</span> = <span class="ruby-constant">XNode</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">segment</span>.<span class="ruby-identifier">finish</span>)
+          <span class="ruby-identifier">qi</span>.<span class="ruby-identifier">children</span> = [<span class="ruby-identifier">si</span>, <span class="ruby-identifier">right</span>]
+          <span class="ruby-identifier">update_parents</span>(<span class="ruby-identifier">cell</span>, <span class="ruby-identifier">qi</span>)
+          <span class="ruby-identifier">make_corner_neighbours</span>(<span class="ruby-identifier">right</span>, <span class="ruby-identifier">top</span>, <span class="ruby-identifier">bottom</span>, <span class="ruby-identifier">cell</span>, <span class="ruby-identifier">:right</span>)
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">cell</span> = <span class="ruby-identifier">cell</span>.<span class="ruby-identifier">next_neighbour</span>(<span class="ruby-identifier">segment</span>)
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

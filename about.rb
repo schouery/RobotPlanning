@@ -1,5 +1,6 @@
 require 'gtk2'
 
+# A about dialog
 class AboutDialog < Gtk::AboutDialog
 
   def initialize
@@ -13,9 +14,6 @@ class AboutDialog < Gtk::AboutDialog
     set_website_label 'Mafagrafos.com'
     set_logo Gdk::Pixbuf.new('r2d2.png', 86, 80)
     set_modal true
-    set_copyright ""
-    # set_icon 
-    # set_title ""
     set_authors ["Rafael Crivellari Saliba Schouery"]
   end
 

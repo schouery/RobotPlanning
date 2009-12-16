@@ -1,7 +1,9 @@
 require 'gtk2'
 
+# A save file dialog
 class SaveDialog < Gtk::FileChooserDialog
 
+  # Receives a callback that should be called when a file is chosen and ok is clicked
   def initialize(callback)
     super()
     set_action Gtk::FileChooser::ACTION_SAVE

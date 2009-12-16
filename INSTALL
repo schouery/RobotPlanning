@@ -1,0 +1,16 @@
+=== Installing Ruby 1.8 ===
+
+Follow the instructions on http://www.ruby-lang.org/en/downloads/, in particular, if you use Ubuntu Linux then use:
+
+% sudo apt-get install ruby irb rdoc
+
+=== Installing Ruby-GNOME 2 ===
+Follow the instructions on http://ruby-gnome2.sourceforge.jp/hiki.cgi?Install+Guide, in particular, if you use Ubuntu Linus then use:
+
+% sudo apt-get install ruby-gnome2
+
+=== Using the program ===
+In the command line, run:
+
+% ruby robotplanning.rb
+

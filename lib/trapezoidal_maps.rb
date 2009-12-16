@@ -4,13 +4,15 @@ require 'lib/xnode'
 require 'lib/ynode'
 require 'lib/trapezoid_node'
 
+# Search Structure generated from a trapeozidal map
 class SearchStructure
-  attr_reader :root
+  attr_reader :root, :new_trapezoids
   
   def initialize(root = nil)
     @root = root
   end
 
+  # Search for a point or segment
   def find(info, options={})
     node = @root
     while(node.class != TrapezoidNode)
@@ -19,10 +21,12 @@ class SearchStructure
     node
   end
 
+  # Create a new SearchStructure from a bounding box
   def self.new_from_bounding_box(s1, s2, s3, s4)
     SearchStructure.new(TrapezoidNode.new(:leftp => s1.start, :rightp => s1.finish, :bottom => s1, :top => s3))
   end
   
+  # Used when the segment added cross only one trapezoid
   def solve_for_one(segment, cell, trapezoid, si, right, top, bottom)
     left_collision = (trapezoid.leftp.x == segment.start.x)
     right_collision = (segment.finish.x == trapezoid.rightp.x)      
@@ -32,6 +36,7 @@ class SearchStructure
                                :rightp => segment.start,
                                :top => trapezoid.top,
                                :bottom => trapezoid.bottom)    
+      @new_trapezoids << left
       update_parents(cell, pi)
       make_corner_neighbours(left, top, bottom, cell, :left)  
     end
@@ -40,6 +45,7 @@ class SearchStructure
                             :rightp => trapezoid.rightp,
                             :top => trapezoid.top,
                             :bottom => trapezoid.bottom)
+        @new_trapezoids << right
         qi = XNode.new(segment.finish)
         qi.children = [si, right]
         make_corner_neighbours(right, top, bottom, cell, :right)
@@ -62,8 +68,25 @@ class SearchStructure
         end
       end    
   end
+  
+  # Generates a list os trapezoid which will be crossed by segment, used for animation
+  def update_list(segment)
+    list = []
+    cell = find(segment, :segment => true)
+    list << cell.trapezoid
+    last = cell.trapezoid.rightp.x >= segment.finish.x 
+    cell = cell.next_neighbour(segment)
+    while(!last && !cell.nil? && cell.trapezoid.leftp.x < segment.finish.x)
+      list << cell.trapezoid
+      cell = cell.next_neighbour(segment)
+    end
+    list
+  end
 
+  # Add a new segment to the structure, spliting the current trapezoids and updates
+  # new_trapezoids, allowing to draw which trapezoids are recently created
   def add(segment)
+    @new_trapezoids = []    
     segment = segment.new_left_to_right
     cell = find(segment, :segment => true)
     trapezoid = cell.trapezoid
@@ -72,6 +95,8 @@ class SearchStructure
     right = last ? segment.finish : trapezoid.rightp
     top = split(segment.start, right, segment, trapezoid, :top)
     bottom = split(segment.start, right, segment, trapezoid, :bottom)
+    @new_trapezoids << top
+    @new_trapezoids << bottom
     si.children = [top,bottom]
     if last
       solve_for_one(segment, cell, trapezoid, si, right, top, bottom)
@@ -86,6 +111,7 @@ class SearchStructure
                                :rightp => segment.start,
                                :top => trapezoid.top,
                                :bottom => trapezoid.bottom)    
+      @new_trapezoids << left
       pi.children = [left, si]
       update_parents(cell, pi)
       make_corner_neighbours(left, top, bottom, cell, :left)
@@ -99,6 +125,8 @@ class SearchStructure
       si = YNode.new(segment)
       old_bottom, old_top = bottom, top
       bottom, top = merge(segment, trapezoid, bottom, top, right)
+      @new_trapezoids << bottom if bottom != old_bottom
+      @new_trapezoids << top if top != top
       make_left_neighbours(bottom, old_bottom, top, old_top, cell, segment)
       si.children = [top, bottom]
       if !last
@@ -113,6 +141,7 @@ class SearchStructure
                               :rightp => trapezoid.rightp,
                               :top => trapezoid.top,
                               :bottom => trapezoid.bottom)
+          @new_trapezoids << right
           qi = XNode.new(segment.finish)
           qi.children = [si, right]
           update_parents(cell, qi)
@@ -123,6 +152,7 @@ class SearchStructure
     end
   end
 
+  # Updates the parents of cell, switching it to new_child
   def update_parents(cell, new_child)
     if cell.parents.empty?
       @root = new_child
@@ -137,6 +167,12 @@ class SearchStructure
     end
   end
 
+  # Splits the trapezoid
+  # * left: the leftp of the new trapezoid
+  # * right: the rightp of the new trapezoid
+  # * segment: the segment doing the split
+  # * trapezoid: the trapezoid being splitted
+  # * side: :top or :bottom, depending which trapezoid is desired
   def split(left, right, segment, trapezoid, side)
     if(side == :top)
       TrapezoidNode.new(:leftp => left,
@@ -151,8 +187,12 @@ class SearchStructure
     end
   end
 
+  # Whenever we have multiple crossings, one of the new trapezoids have to be merged
+  # with its left neighbour.
+  # This method does that, merging the necessary one and creating the other that is not
+  # goig to be merged.
   def merge(segment, trapezoid, bottom, top, right)
-    if segment.left(trapezoid.leftp) #ponto está a acima, fazermos merge abaixo
+    if segment.left(trapezoid.leftp)
       top = split(trapezoid.leftp, right, segment, trapezoid, :top)
       bottom.trapezoid.rightp = right
     else
@@ -162,6 +202,8 @@ class SearchStructure
     [bottom,top]
   end
 
+  # Adjusts the left neighbours of top or bottom, depending which one made the merge
+  # This one is used for merge purpouses only
   def make_left_neighbours(bottom, old_bottom, top, old_top, cell, segment)
     if(old_bottom != bottom)
       bottom.left_neighbours = cell.split_neighbours(segment,:left)[0]
@@ -177,6 +219,7 @@ class SearchStructure
     end
   end
 
+  # Splits the cell neighbours for top and bottom
   def make_neighbours(bottom, top, cell, segment, side, shift_bottom = false)
     if side == :right
       bottom.right_neighbours, top.right_neighbours = cell.split_neighbours(segment, side)
@@ -189,6 +232,8 @@ class SearchStructure
     top.correct_neighbours(cell, side)
   end
 
+  # Make corners neighbours, used in the first and last splits, when there is no left (or right)
+  # collisions.
   def make_corner_neighbours(node, top, bottom, cell, side)
     if side == :left
       node.left_neighbours = cell.left_neighbours
@@ -205,10 +250,12 @@ class SearchStructure
     end
   end
 
+  # Draw the structure
   def draw(drawer)
     recursive_draw(@root, drawer)
   end
 
+  # Used to draw the structure
   def recursive_draw(node, drawer)
     if node.class == YNode
       node.draw(drawer)
@@ -222,12 +269,14 @@ class SearchStructure
     end 
   end
 
+  # Create the graph from the structure
   def create_graph
     g = Graph::AdjacencyListGraph.new
     recursive_create_graph(root, g)
     g
   end
   
+  # Used to create the graph
   def recursive_create_graph(node, g)
     if node.class == TrapezoidNode
       node.create_star(g)

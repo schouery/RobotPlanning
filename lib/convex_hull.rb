@@ -1,8 +1,10 @@
 require 'lib/segment'
 require 'lib/point'
 
-class ConvexHull
-  #Graham
+# Allows to generate Convex Hulls
+module ConvexHull
+  # Graham implementation of Convex Hull
+  # It returns the list of edges or a empty list if the hull have only one point
   def self.generate(points)
     return [] if points.size < 2
     return [Segment[points[0], points[1]]] if points.size == 2 && points[0] != points[1]

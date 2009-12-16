@@ -1,7 +1,8 @@
 require 'gtk2'
 
+# A open file dialog
 class OpenDialog < Gtk::FileChooserDialog
-
+  # Receives a callback that should be called when a file is chosen and ok is clicked
   def initialize(callback)
     super()
     @cancel = add_button(Gtk::Stock::CANCEL, Gtk::Dialog::RESPONSE_CANCEL)

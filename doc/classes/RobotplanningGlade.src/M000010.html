@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>clean (RobotplanningGlade)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File robotplanning.rb, line 165</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">clean</span>
+    <span class="ruby-ivar">@first_point</span> = <span class="ruby-keyword kw">true</span>
+    <span class="ruby-ivar">@locate_thread</span>.<span class="ruby-identifier">kill</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@locate_thread</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@map_thread</span>
+        <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'toolbar_generate_map'</span>].<span class="ruby-identifier">active</span> = <span class="ruby-keyword kw">false</span>
+        <span class="ruby-ivar">@map_thread</span>.<span class="ruby-identifier">kill</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'add_point'</span>].<span class="ruby-identifier">sensitive</span> = <span class="ruby-keyword kw">false</span>
+    <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'toolbar_move'</span>].<span class="ruby-identifier">sensitive</span> = <span class="ruby-keyword kw">false</span>
+    <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'toolbar_next_step'</span>].<span class="ruby-identifier">sensitive</span> = <span class="ruby-keyword kw">false</span>
+    <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'toolbar_record_points'</span>].<span class="ruby-identifier">sensitive</span> = <span class="ruby-keyword kw">true</span>
+    <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'toolbar_record_points'</span>].<span class="ruby-identifier">active</span> = <span class="ruby-keyword kw">false</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'toolbar_record_points'</span>].<span class="ruby-identifier">active?</span>
+    <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'toolbar_move'</span>].<span class="ruby-identifier">active</span> = <span class="ruby-keyword kw">false</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'toolbar_move'</span>].<span class="ruby-identifier">active?</span>
+    <span class="ruby-ivar">@current_file</span> = <span class="ruby-keyword kw">nil</span>
+    <span class="ruby-ivar">@segments</span> = []
+    <span class="ruby-ivar">@points</span> = []
+    <span class="ruby-ivar">@x_coords</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>
+    <span class="ruby-ivar">@planning</span>.<span class="ruby-identifier">clear</span>
+    <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'mainwindow'</span>].<span class="ruby-identifier">title</span> = <span class="ruby-constant">PROG_NAME</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

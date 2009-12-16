@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>generate (ConvexHull)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/convex_hull.rb, line 8</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">generate</span>(<span class="ruby-identifier">points</span>)
+    <span class="ruby-keyword kw">return</span> [] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">points</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">2</span>
+    <span class="ruby-keyword kw">return</span> [<span class="ruby-constant">Segment</span>[<span class="ruby-identifier">points</span>[<span class="ruby-value">0</span>], <span class="ruby-identifier">points</span>[<span class="ruby-value">1</span>]]] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">points</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">==</span> <span class="ruby-value">2</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">points</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">!=</span> <span class="ruby-identifier">points</span>[<span class="ruby-value">1</span>]
+    <span class="ruby-identifier">points</span> = <span class="ruby-identifier">points</span>.<span class="ruby-identifier">dup</span>
+    <span class="ruby-identifier">min</span> = <span class="ruby-value">0</span>
+    <span class="ruby-identifier">points</span>.<span class="ruby-identifier">each_with_index</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">p</span>, <span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+       <span class="ruby-identifier">min</span> = <span class="ruby-identifier">i</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">points</span>[<span class="ruby-identifier">min</span>].<span class="ruby-identifier">y</span> <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">p</span>.<span class="ruby-identifier">y</span> <span class="ruby-operator">||</span> (<span class="ruby-identifier">points</span>[<span class="ruby-identifier">min</span>].<span class="ruby-identifier">y</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">p</span>.<span class="ruby-identifier">y</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">points</span>[<span class="ruby-identifier">min</span>].<span class="ruby-identifier">x</span> <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">p</span>.<span class="ruby-identifier">x</span>)
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">points</span>[<span class="ruby-identifier">min</span>], <span class="ruby-identifier">points</span>[<span class="ruby-value">0</span>] = <span class="ruby-identifier">points</span>[<span class="ruby-value">0</span>], <span class="ruby-identifier">points</span>[<span class="ruby-identifier">min</span>]
+    <span class="ruby-identifier">ini</span> = <span class="ruby-identifier">points</span>.<span class="ruby-identifier">shift</span>
+    <span class="ruby-identifier">points</span>.<span class="ruby-identifier">sort!</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">x</span>,<span class="ruby-identifier">y</span><span class="ruby-operator">|</span> 
+      <span class="ruby-keyword kw">if</span> <span class="ruby-constant">Segment</span>[<span class="ruby-identifier">ini</span>, <span class="ruby-identifier">y</span>].<span class="ruby-identifier">right</span>(<span class="ruby-identifier">x</span>) <span class="ruby-operator">||</span> (<span class="ruby-constant">Segment</span>[<span class="ruby-identifier">ini</span>, <span class="ruby-identifier">y</span>].<span class="ruby-identifier">collinear</span>(<span class="ruby-identifier">x</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">x</span>.<span class="ruby-identifier">dist2</span>(<span class="ruby-identifier">ini</span>) <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">y</span>.<span class="ruby-identifier">dist2</span>(<span class="ruby-identifier">ini</span>))
+        <span class="ruby-value">-1</span>
+      <span class="ruby-keyword kw">else</span>
+        <span class="ruby-value">1</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">h</span> = [<span class="ruby-identifier">ini</span>]
+    <span class="ruby-identifier">h</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">points</span>.<span class="ruby-identifier">shift</span>
+    <span class="ruby-identifier">points</span>.<span class="ruby-identifier">shift</span> <span class="ruby-keyword kw">while</span>(<span class="ruby-operator">!</span><span class="ruby-identifier">points</span>.<span class="ruby-identifier">empty?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-constant">Segment</span>[<span class="ruby-identifier">h</span>[<span class="ruby-value">0</span>], <span class="ruby-identifier">h</span>[<span class="ruby-value">1</span>]].<span class="ruby-identifier">collinear</span>(<span class="ruby-identifier">points</span>[<span class="ruby-value">0</span>]))
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">points</span>.<span class="ruby-identifier">empty?</span>
+      <span class="ruby-keyword kw">return</span> [<span class="ruby-constant">Segment</span>[<span class="ruby-identifier">h</span>[<span class="ruby-value">0</span>], <span class="ruby-identifier">h</span>[<span class="ruby-value">1</span>]]] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">h</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">!=</span> <span class="ruby-identifier">h</span>[<span class="ruby-value">1</span>]
+      <span class="ruby-keyword kw">return</span> []
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">h</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">points</span>.<span class="ruby-identifier">shift</span>    
+    <span class="ruby-identifier">points</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">p</span><span class="ruby-operator">|</span>
+      <span class="ruby-keyword kw">while</span>(<span class="ruby-operator">!</span><span class="ruby-constant">Segment</span>[<span class="ruby-identifier">h</span>[<span class="ruby-identifier">h</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">-</span><span class="ruby-value">2</span>],<span class="ruby-identifier">h</span>[<span class="ruby-identifier">h</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>]].<span class="ruby-identifier">left</span>(<span class="ruby-identifier">p</span>))
+        <span class="ruby-identifier">h</span>.<span class="ruby-identifier">pop</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">h</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">p</span> <span class="ruby-comment cmt">#if !Segment[h[h.size-2],h[h.size-1]].collinear(p)</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">h</span>.<span class="ruby-identifier">pop</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">Segment</span>[<span class="ruby-identifier">h</span>[<span class="ruby-identifier">h</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">-</span><span class="ruby-value">2</span>],<span class="ruby-identifier">h</span>[<span class="ruby-value">0</span>]].<span class="ruby-identifier">collinear</span>(<span class="ruby-identifier">h</span>[<span class="ruby-identifier">h</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>])
+    
+    <span class="ruby-identifier">old</span> = <span class="ruby-identifier">h</span>.<span class="ruby-identifier">last</span>
+    <span class="ruby-identifier">r</span> = []
+    <span class="ruby-identifier">h</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">p</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">r</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-constant">Segment</span>[<span class="ruby-identifier">old</span>,<span class="ruby-identifier">p</span>]
+      <span class="ruby-identifier">old</span> = <span class="ruby-identifier">p</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">r</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

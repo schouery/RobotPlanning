@@ -37,35 +37,66 @@ class RobotplanningGlade
   end
   
   def initialize(path_or_data, root = nil, domain = nil, localedir = nil, flag = GladeXML::FILE)
+    # Glade start
     bindtextdomain(domain, localedir, nil, "UTF-8")
     @glade = GladeXML.new(path_or_data, root, domain, localedir, flag) {|handler| method(handler)}
+    # Glade finish
     @drawer = Drawer.new(@glade['drawingarea'].window, @glade['drawingarea'].style.black_gc)
-    @planning = Planning.new(@drawer)
-    @open_dialog = OpenDialog.new self.method(:open)
-    @save_dialog = SaveDialog.new self.method(:save)
-    
-    @segment_color_dialog = ColorDialog.new do |color|
-      @drawer.segments_color = color
-    end
-    
-    @graph_color_dialog = ColorDialog.new do |color|
-      @drawer.graph_color = color
-    end
-
-    @trapezoid_color_dialog = ColorDialog.new do |color|
-      @drawer.trapezoid_base_color = color
-    end
-
-    @robot_color_dialog = ColorDialog.new do |color|
-      @drawer.robot_base_color = color
-    end
-        
+    @planning = Planning.new(@drawer, @glade['statusbar'])
+    @context = @glade['statusbar'].get_context_id("robotplanning")
+    create_dialogs
     clean
     connect_signals
     create_tooltips
     update_size
   end
   
+  # Creates all the dialogs of the project
+  def create_dialogs
+    @open_dialog = OpenDialog.new self.method(:open)
+    @save_dialog = SaveDialog.new self.method(:save)
+  
+    @segment_color_dialog = ColorDialog.new do |c| 
+      @drawer.segments_color = c
+      print
+    end
+    
+    @graph_color_dialog = ColorDialog.new  do |c| 
+      @drawer.graph_color = c
+      print
+    end
+
+    @trapezoid_color_dialog = ColorDialog.new do |c| 
+      @drawer.trapezoid_base_fill_color = c
+      print
+    end
+    
+    @robot_color_dialog = ColorDialog.new do |c| 
+      @drawer.robot_color = c
+      print
+    end
+    
+    @robot_line_color = ColorDialog.new do |c| 
+      @drawer.robot_line_color = c
+      print
+    end
+    
+    @trapezoids_segment_color = ColorDialog.new do |c| 
+      @drawer.trapezoid_segment_color = c
+      print
+    end
+    
+    @new_trapezoides = ColorDialog.new do |c| 
+      @drawer.new_trapezoid_color = c
+    end
+      
+    @destroied_trapezoids = ColorDialog.new do |c| 
+      @drawer.old_trapezoid_color = c
+    end
+    
+  end
+  
+  # Create some events that couldn't be created using ruby-glade
   def connect_signals
     @glade['drawingarea'].signal_connect('expose_event')   { print }
     @glade['eventbox'].events = Gdk::Event::BUTTON_PRESS_MASK
@@ -73,6 +104,7 @@ class RobotplanningGlade
     @glade['mainwindow'].signal_connect('destroy'){Gtk.main_quit}    
   end
   
+  # Update the size according to the drawing area size
   def update_size
     @max_x = @glade['drawingarea'].allocation.width - 1
     @max_y = @glade['drawingarea'].allocation.height - 1
@@ -80,6 +112,7 @@ class RobotplanningGlade
     @glade['yvalue'].set_range(1,@max_y)
   end
   
+  # Adds a point, testing if we are searching or create polygons
   def add_point(point)
     return if point.x < 1 || point.y < 1 || point.x > @max_x-1 || point.y > @max_y-1
     if @glade['toolbar_move'].active?
@@ -94,17 +127,24 @@ class RobotplanningGlade
         move
       end
     elsif @glade['toolbar_record_points'].active?
-      @points << point
+      if @x_coords[point.x]
+        @glade['statusbar'].push(@context, "Este programa não suporta 2 ou mais pontos com mesma X-coordenada!")
+      else
+        @points << point
+        @x_coords[point.x] = point
+      end
       print
     end
   end
   
+  # Make a search and move the robot
   def move
     @glade['toolbar_next_step'].sensitive = @planning.step_by_step
     @glade['add_point'].sensitive = false
     @locate_thread = @planning.locate(@start, @finish) {move_finished}
   end
   
+  # Called once the movement of the robot is finished
   def move_finished
     @glade['toolbar_next_step'].sensitive = false
     @glade['toolbar_generate_map'].sensitive = true
@@ -113,14 +153,15 @@ class RobotplanningGlade
     @glade['toolbar_move'].active = false
   end
   
+  # Called once the generation of the map is finished
   def map_finished
     @glade['toolbar_next_step'].sensitive = false
     @glade['toolbar_move'].sensitive = true
     @glade['toolbar_record_points'].sensitive = true
     @glade['toolbar_generate_map'].active = false
-    @map_thread = nil
   end
   
+  # Cleanup for new or open files
   def clean
     @first_point = true
     @locate_thread.kill if @locate_thread
@@ -128,19 +169,21 @@ class RobotplanningGlade
         @glade['toolbar_generate_map'].active = false
         @map_thread.kill
     end
+    @glade['add_point'].sensitive = false
     @glade['toolbar_move'].sensitive = false
     @glade['toolbar_next_step'].sensitive = false
-    @glade['add_point'].sensitive = true
     @glade['toolbar_record_points'].sensitive = true
     @glade['toolbar_record_points'].active = false if @glade['toolbar_record_points'].active?
     @glade['toolbar_move'].active = false if @glade['toolbar_move'].active?
     @current_file = nil
     @segments = []
     @points = []
+    @x_coords = Hash.new
     @planning.clear
     @glade['mainwindow'].title = PROG_NAME
   end
   
+  # Opens a file
   def open(filename)
     clean
     File.open(filename) do |f|
@@ -148,7 +191,18 @@ class RobotplanningGlade
         line.strip!
         if !line.start_with?('#')
           values = line.split.collect {|x| x.to_i}
-          @segments << Segment[Point[values[0], values[1]], Point[values[2], values[3]]]
+          p = Point[values[0], values[1]]
+          q = Point[values[2], values[3]]
+          if (!@x_coords[values[0]].nil? && @x_coords[values[0]] != p) ||
+             (!@x_coords[values[2]].nil? && @x_coords[values[2]] != q)
+            clean
+            @glade['statusbar'].push(@context, "Arquivo inválido: 2 pontos com mesma X-coordenada. Arquivo ignorado.")
+            return
+          else
+            @x_coords[values[0]] = p
+            @x_coords[values[2]] = q
+          end
+          @segments << Segment[p,q]
         end
       end
     end
@@ -157,6 +211,7 @@ class RobotplanningGlade
     print
   end
   
+  # Save the current file
   def save(filename)
     File.open(filename, 'w') do |f|
       @segments.each do |s|
@@ -167,6 +222,7 @@ class RobotplanningGlade
     @glade['mainwindow'].title = PROG_NAME + " - " + File.basename(filename)
   end
   
+  # Draw items on the screen
   def print
     @planning.draw
     @segments.each do |s|
@@ -253,14 +309,13 @@ class RobotplanningGlade
     end
   end  
 
-  #depends on the current active action
   def on_add_point_clicked(widget)
     add_point(Point[@glade['xvalue'].text.to_i, @glade['yvalue'].text.to_i])
   end
     
   def on_show_graph_activate(widget)
     @planning.show_graph = widget.active?
-    print
+    prints
   end
 
   def on_show_trapezoids_activate(widget)
@@ -268,13 +323,12 @@ class RobotplanningGlade
     print
   end
 
-  # Funções de Animação
   def on_speedscale_value_changed(widget)
     @planning.speed = glade['speedscale'].value
   end
 
   def on_toolbar_next_step_clicked(widget)
-    puts "on_next_step_clicked() is not implemented yet."
+    @planning.next_step
   end
 
   def on_stepbystep_toggled(widget)
@@ -282,7 +336,6 @@ class RobotplanningGlade
     @glade['toolbar_next_step'].sensitive = false if !@planning.step_by_step
   end
   
-  #Funções de menu
   def on_color_segments_activate(widget)
     @segment_color_dialog.show
   end
@@ -299,11 +352,29 @@ class RobotplanningGlade
     @robot_color_dialog.show
   end
 
+  def on_robot_line_activate(widget)
+    @planning.show_line = widget.active?
+  end
+  
+  def on_robot_line_color_activate(widget)
+    @robot_line_color.show  
+  end
+  
+  def on_trapezoids_segments_activate(widget)
+    @trapezoids_segment_color.show
+  end
+  
+  def on_new_trapezoides_activate(widget)
+    @new_trapezoides.show
+  end
+  
+  def on_destroied_trapezoids_activate(widget)
+    @destroied_trapezoids.show
+  end
 end
 
 # Main program
 if __FILE__ == $0
-  # Set values as your own application. 
   PROG_PATH = "robotplanning.glade"
   RobotplanningGlade.new(PROG_PATH, nil, PROG_NAME)
   Gtk.main

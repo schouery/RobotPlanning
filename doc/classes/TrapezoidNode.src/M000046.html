@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>next_neighbour (TrapezoidNode)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/trapezoid_node.rb, line 37</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">next_neighbour</span>(<span class="ruby-identifier">segment</span>)
+    <span class="ruby-ivar">@right_neighbours</span>.<span class="ruby-identifier">find</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">n</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">segment</span>.<span class="ruby-identifier">left</span>(<span class="ruby-identifier">n</span>.<span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">top_left_corner</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">segment</span>.<span class="ruby-identifier">right</span>(<span class="ruby-identifier">n</span>.<span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">bottom_left_corner</span>)
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

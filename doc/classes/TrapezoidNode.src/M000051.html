@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>create_star (TrapezoidNode)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/trapezoid_node.rb, line 83</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">create_star</span>(<span class="ruby-identifier">graph</span>)
+    <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@vertice</span>
+    <span class="ruby-ivar">@vertice</span> = <span class="ruby-constant">Graph</span><span class="ruby-operator">::</span><span class="ruby-constant">Vertice</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@trapezoid</span>.<span class="ruby-identifier">center</span>)
+    <span class="ruby-identifier">graph</span>.<span class="ruby-identifier">add_vertice</span>(<span class="ruby-ivar">@vertice</span>)
+    <span class="ruby-identifier">x</span> = <span class="ruby-ivar">@trapezoid</span>.<span class="ruby-identifier">leftp</span>.<span class="ruby-identifier">x</span>
+    <span class="ruby-identifier">top</span> = <span class="ruby-ivar">@trapezoid</span>.<span class="ruby-identifier">top_left_corner</span>.<span class="ruby-identifier">y</span>
+    <span class="ruby-ivar">@left_vertices</span> = []
+    <span class="ruby-ivar">@left_neighbours</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">n</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">bottom</span> = [<span class="ruby-identifier">n</span>.<span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">bottom_right_corner</span>.<span class="ruby-identifier">y</span>, <span class="ruby-ivar">@trapezoid</span>.<span class="ruby-identifier">bottom_left_corner</span>.<span class="ruby-identifier">y</span>].<span class="ruby-identifier">max</span>
+      <span class="ruby-identifier">top</span> = [<span class="ruby-identifier">n</span>.<span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">top_right_corner</span>.<span class="ruby-identifier">y</span>, <span class="ruby-ivar">@trapezoid</span>.<span class="ruby-identifier">top_left_corner</span>.<span class="ruby-identifier">y</span>].<span class="ruby-identifier">min</span>
+      <span class="ruby-identifier">y</span> = (<span class="ruby-identifier">bottom</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">top</span>) <span class="ruby-operator">/</span> <span class="ruby-value">2</span>
+  
+      <span class="ruby-comment cmt">#LENTO - Precisa de referencia duplicada</span>
+      <span class="ruby-identifier">i</span> = <span class="ruby-identifier">n</span>.<span class="ruby-identifier">right_neighbours</span>.<span class="ruby-identifier">index</span>(<span class="ruby-keyword kw">self</span>)
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">n</span>.<span class="ruby-identifier">right_vertices</span>[<span class="ruby-identifier">i</span>]
+        <span class="ruby-identifier">v</span> = <span class="ruby-identifier">n</span>.<span class="ruby-identifier">right_vertices</span>[<span class="ruby-identifier">i</span>]
+      <span class="ruby-keyword kw">else</span>
+        <span class="ruby-identifier">v</span> = <span class="ruby-constant">Graph</span><span class="ruby-operator">::</span><span class="ruby-constant">Vertice</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">Point</span>[<span class="ruby-identifier">x</span>,<span class="ruby-identifier">y</span>])
+        <span class="ruby-identifier">graph</span>.<span class="ruby-identifier">add_vertice</span>(<span class="ruby-identifier">v</span>) <span class="ruby-comment cmt"># so ocorre se ja nao existir</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">graph</span>.<span class="ruby-identifier">add_edge</span>(<span class="ruby-ivar">@vertice</span>, <span class="ruby-identifier">v</span>)
+      <span class="ruby-ivar">@left_vertices</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">v</span>
+    <span class="ruby-keyword kw">end</span>
+
+    <span class="ruby-identifier">x</span> = <span class="ruby-ivar">@trapezoid</span>.<span class="ruby-identifier">rightp</span>.<span class="ruby-identifier">x</span>
+    <span class="ruby-ivar">@right_vertices</span> = []
+    
+    <span class="ruby-ivar">@right_neighbours</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">n</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">bottom</span> = [<span class="ruby-identifier">n</span>.<span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">bottom_left_corner</span>.<span class="ruby-identifier">y</span>, <span class="ruby-ivar">@trapezoid</span>.<span class="ruby-identifier">bottom_right_corner</span>.<span class="ruby-identifier">y</span>].<span class="ruby-identifier">max</span>
+      <span class="ruby-identifier">top</span> = [<span class="ruby-identifier">n</span>.<span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">top_left_corner</span>.<span class="ruby-identifier">y</span>, <span class="ruby-ivar">@trapezoid</span>.<span class="ruby-identifier">top_right_corner</span>.<span class="ruby-identifier">y</span>].<span class="ruby-identifier">min</span>
+      <span class="ruby-identifier">y</span> = (<span class="ruby-identifier">bottom</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">top</span>) <span class="ruby-operator">/</span> <span class="ruby-value">2</span>
+
+      <span class="ruby-comment cmt">#LENTO - Precisa de referencia duplicada</span>
+      <span class="ruby-identifier">i</span> = <span class="ruby-identifier">n</span>.<span class="ruby-identifier">left_neighbours</span>.<span class="ruby-identifier">index</span>(<span class="ruby-keyword kw">self</span>)
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">n</span>.<span class="ruby-identifier">left_vertices</span>[<span class="ruby-identifier">i</span>]
+        <span class="ruby-identifier">v</span> = <span class="ruby-identifier">n</span>.<span class="ruby-identifier">left_vertices</span>[<span class="ruby-identifier">i</span>]
+      <span class="ruby-keyword kw">else</span>
+        <span class="ruby-identifier">v</span> = <span class="ruby-constant">Graph</span><span class="ruby-operator">::</span><span class="ruby-constant">Vertice</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">Point</span>[<span class="ruby-identifier">x</span>,<span class="ruby-identifier">y</span>])
+        <span class="ruby-identifier">graph</span>.<span class="ruby-identifier">add_vertice</span>(<span class="ruby-identifier">v</span>) <span class="ruby-comment cmt"># so ocorre se ja nao existir</span>
+      <span class="ruby-keyword kw">end</span>
+
+      <span class="ruby-identifier">graph</span>.<span class="ruby-identifier">add_edge</span>(<span class="ruby-ivar">@vertice</span>, <span class="ruby-identifier">v</span>)
+      <span class="ruby-ivar">@right_vertices</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">v</span>
+    <span class="ruby-keyword kw">end</span>
+    
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

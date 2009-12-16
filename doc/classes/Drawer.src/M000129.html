@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>slowly_draw_segment (Drawer)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/drawer.rb, line 86</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">slowly_draw_segment</span>(<span class="ruby-identifier">segment</span>, <span class="ruby-identifier">planning</span>, <span class="ruby-identifier">radius</span> = <span class="ruby-value">5</span>)
+    <span class="ruby-identifier">a</span> = <span class="ruby-identifier">segment</span>.<span class="ruby-identifier">start</span>
+    <span class="ruby-identifier">b</span> = <span class="ruby-identifier">segment</span>.<span class="ruby-identifier">finish</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">planning</span>.<span class="ruby-identifier">speed</span> <span class="ruby-operator">==</span> <span class="ruby-value">100</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">planning</span>.<span class="ruby-identifier">stop</span>
+      <span class="ruby-identifier">draw_segment</span>(<span class="ruby-identifier">segment</span>, <span class="ruby-identifier">:robot</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">planning</span>.<span class="ruby-identifier">show_line</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-identifier">lambda</span> = <span class="ruby-value">0</span>
+      <span class="ruby-identifier">dist</span> = <span class="ruby-constant">Math</span>.<span class="ruby-identifier">sqrt</span>(<span class="ruby-identifier">a</span>.<span class="ruby-identifier">dist2</span>(<span class="ruby-identifier">b</span>))
+      <span class="ruby-keyword kw">while</span>(<span class="ruby-identifier">lambda</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">1</span>)
+        <span class="ruby-identifier">clear</span>
+        <span class="ruby-keyword kw">yield</span>
+        <span class="ruby-ivar">@gc</span>.<span class="ruby-identifier">rgb_fg_color</span> = <span class="ruby-ivar">@robot_line_color</span>
+        <span class="ruby-ivar">@drawing_area</span>.<span class="ruby-identifier">draw_line</span>(<span class="ruby-ivar">@gc</span>, <span class="ruby-identifier">a</span>.<span class="ruby-identifier">x</span>, <span class="ruby-identifier">a</span>.<span class="ruby-identifier">y</span>, <span class="ruby-identifier">a</span>.<span class="ruby-identifier">x</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">lambda</span><span class="ruby-operator">*</span><span class="ruby-identifier">b</span>.<span class="ruby-identifier">x</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">lambda</span><span class="ruby-operator">*</span><span class="ruby-identifier">a</span>.<span class="ruby-identifier">x</span>, <span class="ruby-identifier">a</span>.<span class="ruby-identifier">y</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">lambda</span><span class="ruby-operator">*</span><span class="ruby-identifier">b</span>.<span class="ruby-identifier">y</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">lambda</span><span class="ruby-operator">*</span><span class="ruby-identifier">a</span>.<span class="ruby-identifier">y</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">planning</span>.<span class="ruby-identifier">show_line</span>
+        <span class="ruby-identifier">draw_circle</span>(<span class="ruby-identifier">a</span>.<span class="ruby-identifier">x</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">lambda</span><span class="ruby-operator">*</span><span class="ruby-identifier">b</span>.<span class="ruby-identifier">x</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">lambda</span><span class="ruby-operator">*</span><span class="ruby-identifier">a</span>.<span class="ruby-identifier">x</span>, <span class="ruby-identifier">a</span>.<span class="ruby-identifier">y</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">lambda</span><span class="ruby-operator">*</span><span class="ruby-identifier">b</span>.<span class="ruby-identifier">y</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">lambda</span><span class="ruby-operator">*</span><span class="ruby-identifier">a</span>.<span class="ruby-identifier">y</span>, <span class="ruby-identifier">radius</span>, <span class="ruby-identifier">:robot</span>)  
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">planning</span>.<span class="ruby-identifier">speed</span> <span class="ruby-operator">!=</span> <span class="ruby-value">100</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">planning</span>.<span class="ruby-identifier">stop</span>
+          <span class="ruby-identifier">sleep</span>(<span class="ruby-constant">BASE_SPEED</span>)
+          <span class="ruby-identifier">lambda</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">planning</span>.<span class="ruby-identifier">speed</span><span class="ruby-operator">/</span>(<span class="ruby-value">100</span><span class="ruby-operator">*</span><span class="ruby-identifier">dist</span><span class="ruby-operator">*</span><span class="ruby-constant">SPEED_FACTOR</span>)
+          <span class="ruby-keyword kw">break</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">lambda</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">1</span>
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-ivar">@gc</span>.<span class="ruby-identifier">rgb_fg_color</span> = <span class="ruby-ivar">@black</span>
+          <span class="ruby-keyword kw">return</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">clear</span>
+      <span class="ruby-keyword kw">yield</span>
+      <span class="ruby-identifier">draw_segment</span>(<span class="ruby-identifier">segment</span>, <span class="ruby-identifier">:robot</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">planning</span>.<span class="ruby-identifier">show_line</span>
+      <span class="ruby-identifier">draw_circle</span>(<span class="ruby-identifier">b</span>.<span class="ruby-identifier">x</span>, <span class="ruby-identifier">b</span>.<span class="ruby-identifier">y</span>, <span class="ruby-identifier">radius</span>, <span class="ruby-identifier">:robot</span>)
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-ivar">@gc</span>.<span class="ruby-identifier">rgb_fg_color</span> = <span class="ruby-ivar">@black</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

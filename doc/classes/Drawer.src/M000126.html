@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>draw_trapezoid (Drawer)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/drawer.rb, line 42</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">draw_trapezoid</span>(<span class="ruby-identifier">trapezoid</span>, <span class="ruby-identifier">options</span> = {})
+    <span class="ruby-identifier">points</span> = [<span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">bottom_left_corner</span>.<span class="ruby-identifier">to_a</span>, <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">bottom_right_corner</span>.<span class="ruby-identifier">to_a</span>,
+              <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">top_right_corner</span>.<span class="ruby-identifier">to_a</span>, <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">top_left_corner</span>.<span class="ruby-identifier">to_a</span>].<span class="ruby-identifier">uniq</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:new</span>]
+      <span class="ruby-ivar">@gc</span>.<span class="ruby-identifier">rgb_fg_color</span> = <span class="ruby-ivar">@new_trapezoid_color</span>
+    <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:old</span>]
+      <span class="ruby-ivar">@gc</span>.<span class="ruby-identifier">rgb_fg_color</span> = <span class="ruby-ivar">@old_trapezoid_color</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-ivar">@gc</span>.<span class="ruby-identifier">rgb_fg_color</span> = <span class="ruby-ivar">@trapezoid_base_fill_color</span>
+    <span class="ruby-keyword kw">end</span>
+    
+    <span class="ruby-ivar">@drawing_area</span>.<span class="ruby-identifier">draw_polygon</span>(<span class="ruby-ivar">@gc</span>, <span class="ruby-keyword kw">true</span>, <span class="ruby-identifier">points</span>)
+    <span class="ruby-ivar">@gc</span>.<span class="ruby-identifier">rgb_fg_color</span> = <span class="ruby-ivar">@trapezoid_segment_color</span>
+    <span class="ruby-ivar">@drawing_area</span>.<span class="ruby-identifier">draw_polygon</span>(<span class="ruby-ivar">@gc</span>, <span class="ruby-keyword kw">false</span>, <span class="ruby-identifier">points</span>)
+  
+    <span class="ruby-ivar">@gc</span>.<span class="ruby-identifier">rgb_fg_color</span> = <span class="ruby-ivar">@segments_color</span>
+    <span class="ruby-ivar">@drawing_area</span>.<span class="ruby-identifier">draw_line</span>(<span class="ruby-ivar">@gc</span>, <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">bottom_left_corner</span>.<span class="ruby-identifier">x</span>, <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">bottom_left_corner</span>.<span class="ruby-identifier">y</span>,
+     <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">bottom_right_corner</span>.<span class="ruby-identifier">x</span>, <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">bottom_right_corner</span>.<span class="ruby-identifier">y</span>)
+     <span class="ruby-ivar">@drawing_area</span>.<span class="ruby-identifier">draw_line</span>(<span class="ruby-ivar">@gc</span>, <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">top_left_corner</span>.<span class="ruby-identifier">x</span>, <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">top_left_corner</span>.<span class="ruby-identifier">y</span>,
+      <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">top_right_corner</span>.<span class="ruby-identifier">x</span>, <span class="ruby-identifier">trapezoid</span>.<span class="ruby-identifier">top_right_corner</span>.<span class="ruby-identifier">y</span>)
+      
+    <span class="ruby-ivar">@gc</span>.<span class="ruby-identifier">rgb_fg_color</span> = <span class="ruby-ivar">@black</span>  
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

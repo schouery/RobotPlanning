@@ -44,13 +44,18 @@ create_mainwindow (void)
   GtkWidget *menuitem6_menu;
   GtkWidget *show_trapezoids;
   GtkWidget *show_graph;
+  GtkWidget *robot_line;
   GtkWidget *separador1;
   GtkWidget *colors;
   GtkWidget *colors_menu;
   GtkWidget *colors_graph;
   GtkWidget *color_trapezoids;
+  GtkWidget *trapezoids_segments;
+  GtkWidget *new_trapezoides;
+  GtkWidget *destroied_trapezoids;
   GtkWidget *color_segments;
   GtkWidget *color_robot;
+  GtkWidget *robot_line_color;
   GtkWidget *menuitem7;
   GtkWidget *menuitem7_menu;
   GtkWidget *about;
@@ -96,7 +101,6 @@ create_mainwindow (void)
   mainwindow = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_size_request (mainwindow, 800, 600);
   gtk_window_set_title (GTK_WINDOW (mainwindow), _("RobotPlanning"));
-  gtk_window_set_resizable (GTK_WINDOW (mainwindow), FALSE);
 
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_show (vbox1);
@@ -155,6 +159,10 @@ create_mainwindow (void)
   gtk_container_add (GTK_CONTAINER (menuitem6_menu), show_graph);
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (show_graph), TRUE);
 
+  robot_line = gtk_check_menu_item_new_with_mnemonic (_("Rastro"));
+  gtk_widget_show (robot_line);
+  gtk_container_add (GTK_CONTAINER (menuitem6_menu), robot_line);
+
   separador1 = gtk_separator_menu_item_new ();
   gtk_widget_show (separador1);
   gtk_container_add (GTK_CONTAINER (menuitem6_menu), separador1);
@@ -171,9 +179,21 @@ create_mainwindow (void)
   gtk_widget_show (colors_graph);
   gtk_container_add (GTK_CONTAINER (colors_menu), colors_graph);
 
-  color_trapezoids = gtk_menu_item_new_with_mnemonic (_("Trapezoides"));
+  color_trapezoids = gtk_menu_item_new_with_mnemonic (_("Trapezoides - Fundo"));
   gtk_widget_show (color_trapezoids);
   gtk_container_add (GTK_CONTAINER (colors_menu), color_trapezoids);
+
+  trapezoids_segments = gtk_menu_item_new_with_mnemonic (_("Trapezoides - Linha"));
+  gtk_widget_show (trapezoids_segments);
+  gtk_container_add (GTK_CONTAINER (colors_menu), trapezoids_segments);
+
+  new_trapezoides = gtk_menu_item_new_with_mnemonic (_("Novos Trapezoides"));
+  gtk_widget_show (new_trapezoides);
+  gtk_container_add (GTK_CONTAINER (colors_menu), new_trapezoides);
+
+  destroied_trapezoids = gtk_menu_item_new_with_mnemonic (_("Trapezoides Destru\303\255dos"));
+  gtk_widget_show (destroied_trapezoids);
+  gtk_container_add (GTK_CONTAINER (colors_menu), destroied_trapezoids);
 
   color_segments = gtk_menu_item_new_with_mnemonic (_("Segmentos"));
   gtk_widget_show (color_segments);
@@ -182,6 +202,10 @@ create_mainwindow (void)
   color_robot = gtk_menu_item_new_with_mnemonic (_("Rob\303\264"));
   gtk_widget_show (color_robot);
   gtk_container_add (GTK_CONTAINER (colors_menu), color_robot);
+
+  robot_line_color = gtk_menu_item_new_with_mnemonic (_("Rastro"));
+  gtk_widget_show (robot_line_color);
+  gtk_container_add (GTK_CONTAINER (colors_menu), robot_line_color);
 
   menuitem7 = gtk_menu_item_new_with_mnemonic (_("Aj_uda"));
   gtk_widget_show (menuitem7);
@@ -355,17 +379,32 @@ create_mainwindow (void)
   g_signal_connect ((gpointer) show_graph, "activate",
                     G_CALLBACK (on_show_graph_activate),
                     NULL);
+  g_signal_connect ((gpointer) robot_line, "activate",
+                    G_CALLBACK (on_robot_line_activate),
+                    NULL);
   g_signal_connect ((gpointer) colors_graph, "activate",
                     G_CALLBACK (on_colors_graph_activate),
                     NULL);
   g_signal_connect ((gpointer) color_trapezoids, "activate",
                     G_CALLBACK (on_color_trapezoids_activate),
                     NULL);
+  g_signal_connect ((gpointer) trapezoids_segments, "activate",
+                    G_CALLBACK (on_trapezoids_segments_activate),
+                    NULL);
+  g_signal_connect ((gpointer) new_trapezoides, "activate",
+                    G_CALLBACK (on_new_trapezoides_activate),
+                    NULL);
+  g_signal_connect ((gpointer) destroied_trapezoids, "activate",
+                    G_CALLBACK (on_destroied_trapezoids_activate),
+                    NULL);
   g_signal_connect ((gpointer) color_segments, "activate",
                     G_CALLBACK (on_color_segments_activate),
                     NULL);
   g_signal_connect ((gpointer) color_robot, "activate",
                     G_CALLBACK (on_color_robot_activate),
+                    NULL);
+  g_signal_connect ((gpointer) robot_line_color, "activate",
+                    G_CALLBACK (on_robot_line_color_activate),
                     NULL);
   g_signal_connect ((gpointer) about, "activate",
                     G_CALLBACK (on_about_activate),
@@ -417,13 +456,18 @@ create_mainwindow (void)
   GLADE_HOOKUP_OBJECT (mainwindow, menuitem6_menu, "menuitem6_menu");
   GLADE_HOOKUP_OBJECT (mainwindow, show_trapezoids, "show_trapezoids");
   GLADE_HOOKUP_OBJECT (mainwindow, show_graph, "show_graph");
+  GLADE_HOOKUP_OBJECT (mainwindow, robot_line, "robot_line");
   GLADE_HOOKUP_OBJECT (mainwindow, separador1, "separador1");
   GLADE_HOOKUP_OBJECT (mainwindow, colors, "colors");
   GLADE_HOOKUP_OBJECT (mainwindow, colors_menu, "colors_menu");
   GLADE_HOOKUP_OBJECT (mainwindow, colors_graph, "colors_graph");
   GLADE_HOOKUP_OBJECT (mainwindow, color_trapezoids, "color_trapezoids");
+  GLADE_HOOKUP_OBJECT (mainwindow, trapezoids_segments, "trapezoids_segments");
+  GLADE_HOOKUP_OBJECT (mainwindow, new_trapezoides, "new_trapezoides");
+  GLADE_HOOKUP_OBJECT (mainwindow, destroied_trapezoids, "destroied_trapezoids");
   GLADE_HOOKUP_OBJECT (mainwindow, color_segments, "color_segments");
   GLADE_HOOKUP_OBJECT (mainwindow, color_robot, "color_robot");
+  GLADE_HOOKUP_OBJECT (mainwindow, robot_line_color, "robot_line_color");
   GLADE_HOOKUP_OBJECT (mainwindow, menuitem7, "menuitem7");
   GLADE_HOOKUP_OBJECT (mainwindow, menuitem7_menu, "menuitem7_menu");
   GLADE_HOOKUP_OBJECT (mainwindow, about, "about");

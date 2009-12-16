@@ -11,7 +11,7 @@
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
-  <property name="resizable">False</property>
+  <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
   <property name="decorated">True</property>
   <property name="skip_taskbar_hint">False</property>
@@ -127,6 +127,16 @@
 		  </child>
 
 		  <child>
+		    <widget class="GtkCheckMenuItem" id="robot_line">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Rastro</property>
+		      <property name="use_underline">True</property>
+		      <property name="active">False</property>
+		      <signal name="activate" handler="on_robot_line_activate" last_modification_time="Wed, 16 Dec 2009 10:22:13 GMT"/>
+		    </widget>
+		  </child>
+
+		  <child>
 		    <widget class="GtkSeparatorMenuItem" id="separador1">
 		      <property name="visible">True</property>
 		    </widget>
@@ -153,9 +163,36 @@
 			  <child>
 			    <widget class="GtkMenuItem" id="color_trapezoids">
 			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">Trapezoides</property>
+			      <property name="label" translatable="yes">Trapezoides - Fundo</property>
 			      <property name="use_underline">True</property>
 			      <signal name="activate" handler="on_color_trapezoids_activate" last_modification_time="Mon, 14 Dec 2009 13:42:48 GMT"/>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="trapezoids_segments">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Trapezoides - Linha</property>
+			      <property name="use_underline">True</property>
+			      <signal name="activate" handler="on_trapezoids_segments_activate" last_modification_time="Wed, 16 Dec 2009 10:22:13 GMT"/>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="new_trapezoides">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Novos Trapezoides</property>
+			      <property name="use_underline">True</property>
+			      <signal name="activate" handler="on_new_trapezoides_activate" last_modification_time="Wed, 16 Dec 2009 23:06:57 GMT"/>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="destroied_trapezoids">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Trapezoides Destruídos</property>
+			      <property name="use_underline">True</property>
+			      <signal name="activate" handler="on_destroied_trapezoids_activate" last_modification_time="Wed, 16 Dec 2009 23:06:57 GMT"/>
 			    </widget>
 			  </child>
 
@@ -174,6 +211,15 @@
 			      <property name="label" translatable="yes">Robô</property>
 			      <property name="use_underline">True</property>
 			      <signal name="activate" handler="on_color_robot_activate" last_modification_time="Mon, 14 Dec 2009 13:42:48 GMT"/>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="robot_line_color">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Rastro</property>
+			      <property name="use_underline">True</property>
+			      <signal name="activate" handler="on_robot_line_color_activate" last_modification_time="Wed, 16 Dec 2009 10:22:13 GMT"/>
 			    </widget>
 			  </child>
 			</widget>

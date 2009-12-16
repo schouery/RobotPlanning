@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (AboutDialog)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File about.rb, line 6</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>
+    <span class="ruby-keyword kw">super</span>()
+    <span class="ruby-identifier">signal_connect</span>(<span class="ruby-value str">'response'</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">w</span>, <span class="ruby-identifier">resp_id</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">w</span>.<span class="ruby-identifier">destroy</span>
+    <span class="ruby-keyword kw">end</span>    
+    <span class="ruby-identifier">set_program_name</span> <span class="ruby-value str">'Robot Planning'</span>
+    <span class="ruby-identifier">set_version</span> <span class="ruby-value str">'1.0'</span>
+    <span class="ruby-identifier">set_website</span> <span class="ruby-value str">'http://mafagrafos.com'</span>
+    <span class="ruby-identifier">set_website_label</span> <span class="ruby-value str">'Mafagrafos.com'</span>
+    <span class="ruby-identifier">set_logo</span> <span class="ruby-constant">Gdk</span><span class="ruby-operator">::</span><span class="ruby-constant">Pixbuf</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">'r2d2.png'</span>, <span class="ruby-value">86</span>, <span class="ruby-value">80</span>)
+    <span class="ruby-identifier">set_modal</span> <span class="ruby-keyword kw">true</span>
+    <span class="ruby-identifier">set_authors</span> [<span class="ruby-value str">&quot;Rafael Crivellari Saliba Schouery&quot;</span>]
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

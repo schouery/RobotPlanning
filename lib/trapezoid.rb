@@ -1,7 +1,13 @@
+# Represents a trapezoid
 class Trapezoid
   attr_accessor :leftp, :rightp, :top, :bottom
   attr_reader :top_right_corner, :top_left_corner, :bottom_left_corner, :bottom_right_corner, :center
   
+  # Setups the trapezoid
+  # options[:leftp] the Point in the left of the trapezoid
+  # options[:rightp] the Point in the right of the trapezoid
+  # options[:top] the Segment in the top of the trapezoid
+  # options[:bottom] the Segment in the top of the trapezoid
   def initialize(options = {})
     @leftp = options[:leftp] || Point[0,0]
     @rightp = options[:rightp] || Point[0,0]
@@ -12,6 +18,8 @@ class Trapezoid
     update
   end
   
+  # Calculates the corners and the center, used for painting and
+  # through the algoritm
   def update
     @top_left_corner = @top.x_projection(@leftp)
     @top_right_corner = @top.x_projection(@rightp)
@@ -41,10 +49,13 @@ class Trapezoid
     "bottom: #{bottom.inspect}\n"
   end
   
+  # Draws the trapezoid
   def draw(drawer)
     drawer.draw_trapezoid(self)
   end
   
+  # Calculate the "center" find the middle point of the segments that goes through the middle
+  # of left and right sides
   def calculate_center
     p1 = Point[@leftp.x, (@top_left_corner.y + @bottom_left_corner.y)/2]
     p2 = Point[@rightp.x, (@top_right_corner.y + @bottom_right_corner.y)/2]

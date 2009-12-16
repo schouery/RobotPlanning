@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (Drawer)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/drawer.rb, line 11</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">drawing_area</span>, <span class="ruby-identifier">gc</span>)
+    <span class="ruby-ivar">@black</span> = <span class="ruby-constant">Gdk</span><span class="ruby-operator">::</span><span class="ruby-constant">Color</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">0x0000</span>, <span class="ruby-value">0x0000</span>, <span class="ruby-value">0x0000</span>)
+    <span class="ruby-ivar">@white</span> = <span class="ruby-constant">Gdk</span><span class="ruby-operator">::</span><span class="ruby-constant">Color</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">0x</span><span class="ruby-constant">FFFF</span>, <span class="ruby-value">0x</span><span class="ruby-constant">FFFF</span>, <span class="ruby-value">0x</span><span class="ruby-constant">FFFF</span>)
+    <span class="ruby-ivar">@segments_color</span> = <span class="ruby-ivar">@graph_color</span> = <span class="ruby-ivar">@robot_color</span> = <span class="ruby-ivar">@robot_line_color</span> = 
+    <span class="ruby-ivar">@trapezoid_segment_color</span> = <span class="ruby-ivar">@black</span>
+    <span class="ruby-ivar">@trapezoid_base_fill_color</span> = <span class="ruby-ivar">@white</span>
+    <span class="ruby-ivar">@new_trapezoid_color</span> = <span class="ruby-constant">Gdk</span><span class="ruby-operator">::</span><span class="ruby-constant">Color</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">0x9999</span>, <span class="ruby-value">0x9999</span>, <span class="ruby-value">0x8888</span>)
+    <span class="ruby-ivar">@old_trapezoid_color</span> = <span class="ruby-constant">Gdk</span><span class="ruby-operator">::</span><span class="ruby-constant">Color</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">0x</span><span class="ruby-constant">BBBB</span>, <span class="ruby-value">0x</span><span class="ruby-constant">BBBB</span>, <span class="ruby-value">0x9999</span>)
+    <span class="ruby-ivar">@drawing_area</span> = <span class="ruby-identifier">drawing_area</span>
+    <span class="ruby-ivar">@gc</span> = <span class="ruby-identifier">gc</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

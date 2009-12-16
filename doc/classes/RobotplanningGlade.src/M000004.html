@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>connect_signals (RobotplanningGlade)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File robotplanning.rb, line 100</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">connect_signals</span>
+    <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'drawingarea'</span>].<span class="ruby-identifier">signal_connect</span>(<span class="ruby-value str">'expose_event'</span>)   { <span class="ruby-identifier">print</span> }
+    <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'eventbox'</span>].<span class="ruby-identifier">events</span> = <span class="ruby-constant">Gdk</span><span class="ruby-operator">::</span><span class="ruby-constant">Event</span><span class="ruby-operator">::</span><span class="ruby-constant">BUTTON_PRESS_MASK</span>
+    <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'eventbox'</span>].<span class="ruby-identifier">signal_connect</span>(<span class="ruby-value str">'button_press_event'</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">w</span>, <span class="ruby-identifier">e</span><span class="ruby-operator">|</span> <span class="ruby-identifier">add_point</span>(<span class="ruby-constant">Point</span>[<span class="ruby-identifier">e</span>.<span class="ruby-identifier">x</span>.<span class="ruby-identifier">to_i</span>, <span class="ruby-identifier">e</span>.<span class="ruby-identifier">y</span>.<span class="ruby-identifier">to_i</span>])}
+    <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'mainwindow'</span>].<span class="ruby-identifier">signal_connect</span>(<span class="ruby-value str">'destroy'</span>){<span class="ruby-constant">Gtk</span>.<span class="ruby-identifier">main_quit</span>}    
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

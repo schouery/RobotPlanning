@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>add_point (RobotplanningGlade)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File robotplanning.rb, line 116</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">add_point</span>(<span class="ruby-identifier">point</span>)
+    <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">point</span>.<span class="ruby-identifier">x</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">1</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">point</span>.<span class="ruby-identifier">y</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">1</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">point</span>.<span class="ruby-identifier">x</span> <span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@max_x</span><span class="ruby-operator">-</span><span class="ruby-value">1</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">point</span>.<span class="ruby-identifier">y</span> <span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@max_y</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'toolbar_move'</span>].<span class="ruby-identifier">active?</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@first_point</span>        
+        <span class="ruby-ivar">@start</span> = <span class="ruby-identifier">point</span>
+        <span class="ruby-ivar">@first_point</span> = <span class="ruby-keyword kw">false</span>
+        <span class="ruby-ivar">@points</span> = [<span class="ruby-ivar">@start</span>]
+        <span class="ruby-identifier">print</span>
+      <span class="ruby-keyword kw">else</span>
+        <span class="ruby-ivar">@finish</span> = <span class="ruby-identifier">point</span>
+        <span class="ruby-ivar">@points</span> = []
+        <span class="ruby-identifier">move</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">elsif</span> <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'toolbar_record_points'</span>].<span class="ruby-identifier">active?</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@x_coords</span>[<span class="ruby-identifier">point</span>.<span class="ruby-identifier">x</span>]
+        <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'statusbar'</span>].<span class="ruby-identifier">push</span>(<span class="ruby-ivar">@context</span>, <span class="ruby-value str">&quot;Este programa não suporta 2 ou mais pontos com mesma X-coordenada!&quot;</span>)
+      <span class="ruby-keyword kw">else</span>
+        <span class="ruby-ivar">@points</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">point</span>
+        <span class="ruby-ivar">@x_coords</span>[<span class="ruby-identifier">point</span>.<span class="ruby-identifier">x</span>] = <span class="ruby-identifier">point</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">print</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

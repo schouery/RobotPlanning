@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: Graph::AdjacencyListGraph</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">Graph::AdjacencyListGraph</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../files/lib/graph_rb.html">
+                lib/graph.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                Object
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+An Adjacency List implementation of a <a href="../Graph.html">Graph</a>
+</p>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000143">add_edge</a>&nbsp;&nbsp;
+      <a href="#M000142">add_vertice</a>&nbsp;&nbsp;
+      <a href="#M000145">construct_path</a>&nbsp;&nbsp;
+      <a href="#M000146">dfsR</a>&nbsp;&nbsp;
+      <a href="#M000148">dist</a>&nbsp;&nbsp;
+      <a href="#M000149">draw</a>&nbsp;&nbsp;
+      <a href="#M000144">path</a>&nbsp;&nbsp;
+      <a href="#M000147">pfs</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+    <div id="attribute-list">
+      <h3 class="section-bar">Attributes</h3>
+
+      <div class="name-list">
+        <table>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">nodes</td>
+          <td class="context-item-value">&nbsp;[R]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        </table>
+      </div>
+    </div>
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000143" class="method-detail">
+        <a name="M000143"></a>
+
+        <div class="method-heading">
+          <a href="AdjacencyListGraph.src/M000143.html" target="Code" class="method-signature"
+            onclick="popupCode('AdjacencyListGraph.src/M000143.html');return false;">
+          <span class="method-name">add_edge</span><span class="method-args">(node1, node2)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Adds an edge from node1 to node2
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000142" class="method-detail">
+        <a name="M000142"></a>
+
+        <div class="method-heading">
+          <a href="AdjacencyListGraph.src/M000142.html" target="Code" class="method-signature"
+            onclick="popupCode('AdjacencyListGraph.src/M000142.html');return false;">
+          <span class="method-name">add_vertice</span><span class="method-args">(node)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Registers a new vertice
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000145" class="method-detail">
+        <a name="M000145"></a>
+
+        <div class="method-heading">
+          <a href="AdjacencyListGraph.src/M000145.html" target="Code" class="method-signature"
+            onclick="popupCode('AdjacencyListGraph.src/M000145.html');return false;">
+          <span class="method-name">construct_path</span><span class="method-args">(i)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Constructs the <a href="AdjacencyListGraph.html#M000144">path</a>,
+indicating the points that the robot should go through
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000146" class="method-detail">
+        <a name="M000146"></a>
+
+        <div class="method-heading">
+          <a href="AdjacencyListGraph.src/M000146.html" target="Code" class="method-signature"
+            onclick="popupCode('AdjacencyListGraph.src/M000146.html');return false;">
+          <span class="method-name">dfsR</span><span class="method-args">(nu, finish)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Deepfirst Search
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000148" class="method-detail">
+        <a name="M000148"></a>
+
+        <div class="method-heading">
+          <a href="AdjacencyListGraph.src/M000148.html" target="Code" class="method-signature"
+            onclick="popupCode('AdjacencyListGraph.src/M000148.html');return false;">
+          <span class="method-name">dist</span><span class="method-args">(v,w)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Distance from v to w
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000149" class="method-detail">
+        <a name="M000149"></a>
+
+        <div class="method-heading">
+          <a href="AdjacencyListGraph.src/M000149.html" target="Code" class="method-signature"
+            onclick="popupCode('AdjacencyListGraph.src/M000149.html');return false;">
+          <span class="method-name">draw</span><span class="method-args">(drawer)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Draw the edges
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000144" class="method-detail">
+        <a name="M000144"></a>
+
+        <div class="method-heading">
+          <a href="AdjacencyListGraph.src/M000144.html" target="Code" class="method-signature"
+            onclick="popupCode('AdjacencyListGraph.src/M000144.html');return false;">
+          <span class="method-name">path</span><span class="method-args">(start, finish)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Finds a <a href="AdjacencyListGraph.html#M000144">path</a> from start to
+finish
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000147" class="method-detail">
+        <a name="M000147"></a>
+
+        <div class="method-heading">
+          <a href="AdjacencyListGraph.src/M000147.html" target="Code" class="method-signature"
+            onclick="popupCode('AdjacencyListGraph.src/M000147.html');return false;">
+          <span class="method-name">pfs</span><span class="method-args">(start, finish)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Djikstra Shortest Path
+</p>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

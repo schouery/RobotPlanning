@@ -1,4 +1,7 @@
-class BoundingBox
+#Generate a bounding box
+module BoundingBox
+  # Receive a list of points and a dist of this point that should be respected and creates a box (list of segments)
+  # who is a bounding box for this points
   def self.box_for(points, dist)
     points = [Point[0,0]] if points.nil? || points.empty?    
     minx = points.reduce(points[0].x) {|min,point| min = min > point.x ? point.x : min}

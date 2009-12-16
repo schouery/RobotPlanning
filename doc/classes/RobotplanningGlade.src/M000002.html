@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (RobotplanningGlade)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File robotplanning.rb, line 39</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">path_or_data</span>, <span class="ruby-identifier">root</span> = <span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">domain</span> = <span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">localedir</span> = <span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">flag</span> = <span class="ruby-constant">GladeXML</span><span class="ruby-operator">::</span><span class="ruby-constant">FILE</span>)
+    <span class="ruby-comment cmt"># Glade start</span>
+    <span class="ruby-identifier">bindtextdomain</span>(<span class="ruby-identifier">domain</span>, <span class="ruby-identifier">localedir</span>, <span class="ruby-keyword kw">nil</span>, <span class="ruby-value str">&quot;UTF-8&quot;</span>)
+    <span class="ruby-ivar">@glade</span> = <span class="ruby-constant">GladeXML</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">path_or_data</span>, <span class="ruby-identifier">root</span>, <span class="ruby-identifier">domain</span>, <span class="ruby-identifier">localedir</span>, <span class="ruby-identifier">flag</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">handler</span><span class="ruby-operator">|</span> <span class="ruby-identifier">method</span>(<span class="ruby-identifier">handler</span>)}
+    <span class="ruby-comment cmt"># Glade finish</span>
+    <span class="ruby-ivar">@drawer</span> = <span class="ruby-constant">Drawer</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'drawingarea'</span>].<span class="ruby-identifier">window</span>, <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'drawingarea'</span>].<span class="ruby-identifier">style</span>.<span class="ruby-identifier">black_gc</span>)
+    <span class="ruby-ivar">@planning</span> = <span class="ruby-constant">Planning</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@drawer</span>, <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'statusbar'</span>])
+    <span class="ruby-ivar">@context</span> = <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'statusbar'</span>].<span class="ruby-identifier">get_context_id</span>(<span class="ruby-value str">&quot;robotplanning&quot;</span>)
+    <span class="ruby-identifier">create_dialogs</span>
+    <span class="ruby-identifier">clean</span>
+    <span class="ruby-identifier">connect_signals</span>
+    <span class="ruby-identifier">create_tooltips</span>
+    <span class="ruby-identifier">update_size</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

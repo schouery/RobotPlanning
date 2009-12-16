@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>create_tooltips (RobotplanningGlade)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File robotplanning.rb, line 30</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">create_tooltips</span>
+    <span class="ruby-ivar">@tooltip</span> = <span class="ruby-constant">Gtk</span><span class="ruby-operator">::</span><span class="ruby-constant">Tooltips</span>.<span class="ruby-identifier">new</span>
+    <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'toolbar_new'</span>].<span class="ruby-identifier">set_tooltip</span>(<span class="ruby-ivar">@tooltip</span>, <span class="ruby-identifier">_</span>(<span class="ruby-value str">'Novo'</span>))
+    <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'toolbar_open'</span>].<span class="ruby-identifier">set_tooltip</span>(<span class="ruby-ivar">@tooltip</span>, <span class="ruby-identifier">_</span>(<span class="ruby-value str">'Abrir'</span>))
+    <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'toolbar_save'</span>].<span class="ruby-identifier">set_tooltip</span>(<span class="ruby-ivar">@tooltip</span>, <span class="ruby-identifier">_</span>(<span class="ruby-value str">'Salvar'</span>))
+    <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'toolbar_record_points'</span>].<span class="ruby-identifier">set_tooltip</span>(<span class="ruby-ivar">@tooltip</span>, <span class="ruby-identifier">_</span>(<span class="ruby-value str">'Adicionar Pontos'</span>))
+    <span class="ruby-ivar">@glade</span>[<span class="ruby-value str">'toolbar_move'</span>].<span class="ruby-identifier">set_tooltip</span>(<span class="ruby-ivar">@tooltip</span>, <span class="ruby-identifier">_</span>(<span class="ruby-value str">'Mover Robô'</span>))
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

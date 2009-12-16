@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>create_dialogs (RobotplanningGlade)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File robotplanning.rb, line 55</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">create_dialogs</span>
+    <span class="ruby-ivar">@open_dialog</span> = <span class="ruby-constant">OpenDialog</span>.<span class="ruby-identifier">new</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">method</span>(<span class="ruby-identifier">:open</span>)
+    <span class="ruby-ivar">@save_dialog</span> = <span class="ruby-constant">SaveDialog</span>.<span class="ruby-identifier">new</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">method</span>(<span class="ruby-identifier">:save</span>)
+  
+    <span class="ruby-ivar">@segment_color_dialog</span> = <span class="ruby-constant">ColorDialog</span>.<span class="ruby-identifier">new</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> 
+      <span class="ruby-ivar">@drawer</span>.<span class="ruby-identifier">segments_color</span> = <span class="ruby-identifier">c</span>
+      <span class="ruby-identifier">print</span>
+    <span class="ruby-keyword kw">end</span>
+    
+    <span class="ruby-ivar">@graph_color_dialog</span> = <span class="ruby-constant">ColorDialog</span>.<span class="ruby-identifier">new</span>  <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> 
+      <span class="ruby-ivar">@drawer</span>.<span class="ruby-identifier">graph_color</span> = <span class="ruby-identifier">c</span>
+      <span class="ruby-identifier">print</span>
+    <span class="ruby-keyword kw">end</span>
+
+    <span class="ruby-ivar">@trapezoid_color_dialog</span> = <span class="ruby-constant">ColorDialog</span>.<span class="ruby-identifier">new</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> 
+      <span class="ruby-ivar">@drawer</span>.<span class="ruby-identifier">trapezoid_base_fill_color</span> = <span class="ruby-identifier">c</span>
+      <span class="ruby-identifier">print</span>
+    <span class="ruby-keyword kw">end</span>
+    
+    <span class="ruby-ivar">@robot_color_dialog</span> = <span class="ruby-constant">ColorDialog</span>.<span class="ruby-identifier">new</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> 
+      <span class="ruby-ivar">@drawer</span>.<span class="ruby-identifier">robot_color</span> = <span class="ruby-identifier">c</span>
+      <span class="ruby-identifier">print</span>
+    <span class="ruby-keyword kw">end</span>
+    
+    <span class="ruby-ivar">@robot_line_color</span> = <span class="ruby-constant">ColorDialog</span>.<span class="ruby-identifier">new</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> 
+      <span class="ruby-ivar">@drawer</span>.<span class="ruby-identifier">robot_line_color</span> = <span class="ruby-identifier">c</span>
+      <span class="ruby-identifier">print</span>
+    <span class="ruby-keyword kw">end</span>
+    
+    <span class="ruby-ivar">@trapezoids_segment_color</span> = <span class="ruby-constant">ColorDialog</span>.<span class="ruby-identifier">new</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> 
+      <span class="ruby-ivar">@drawer</span>.<span class="ruby-identifier">trapezoid_segment_color</span> = <span class="ruby-identifier">c</span>
+      <span class="ruby-identifier">print</span>
+    <span class="ruby-keyword kw">end</span>
+    
+    <span class="ruby-ivar">@new_trapezoides</span> = <span class="ruby-constant">ColorDialog</span>.<span class="ruby-identifier">new</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> 
+      <span class="ruby-ivar">@drawer</span>.<span class="ruby-identifier">new_trapezoid_color</span> = <span class="ruby-identifier">c</span>
+    <span class="ruby-keyword kw">end</span>
+      
+    <span class="ruby-ivar">@destroied_trapezoids</span> = <span class="ruby-constant">ColorDialog</span>.<span class="ruby-identifier">new</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> 
+      <span class="ruby-ivar">@drawer</span>.<span class="ruby-identifier">old_trapezoid_color</span> = <span class="ruby-identifier">c</span>
+    <span class="ruby-keyword kw">end</span>
+    
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

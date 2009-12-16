@@ -1,3 +1,4 @@
+#Represent a generic node of trapezoidal map
 class Node
   attr_reader :left_child, :right_child
   attr_accessor :parents
