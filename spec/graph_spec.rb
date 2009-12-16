@@ -20,7 +20,6 @@ describe Graph::AdjacencyListGraph do
     node2.adjacency.should == [node1]
   end
   
-  it "should use shortest path for path"
 end
 
 describe Graph::Vertice do  
