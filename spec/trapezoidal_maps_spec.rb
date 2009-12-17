@@ -480,9 +480,7 @@ describe SearchStructure do
     @default.draw(d)
   end
   
-  it "should know that merge dont ways happens with repeated x-coordinates"
-  
-  it "should work for know problems 2" do
+  it "should work for know problems 1" do
     os1,os2,os3,os4 = BoundingBox.box_for([Point[20,20],Point[520,20],Point[520,520],Point[20,520]], 10)
     left, right = os1.start, os1.finish
     ss = SearchStructure.new_from_bounding_box(os1,os2,os3,os4)
@@ -544,7 +542,7 @@ describe SearchStructure do
     i.right_neighbours.should == []    
   end
 
-  it "should work for know problems 3" do
+  it "should work for know problems 2" do
     os1,os2,os3,os4 = BoundingBox.box_for([Point[20,20],Point[520,20],Point[520,520],Point[20,520]], 10)
     left, right = os1.start, os1.finish
     top = os3

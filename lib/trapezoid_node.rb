@@ -86,19 +86,18 @@ class TrapezoidNode < Node
     graph.add_vertice(@vertice)
     x = @trapezoid.leftp.x
     top = @trapezoid.top_left_corner.y
+
     @left_vertices = []
     @left_neighbours.each do |n|
       bottom = [n.trapezoid.bottom_right_corner.y, @trapezoid.bottom_left_corner.y].max
       top = [n.trapezoid.top_right_corner.y, @trapezoid.top_left_corner.y].min
       y = (bottom + top) / 2
-  
-      #LENTO - Precisa de referencia duplicada
       i = n.right_neighbours.index(self)
       if n.right_vertices[i]
         v = n.right_vertices[i]
       else
         v = Graph::Vertice.new(Point[x,y])
-        graph.add_vertice(v) # so ocorre se ja nao existir
+        graph.add_vertice(v)
       end
       graph.add_edge(@vertice, v)
       @left_vertices << v
@@ -106,21 +105,17 @@ class TrapezoidNode < Node
 
     x = @trapezoid.rightp.x
     @right_vertices = []
-    
     @right_neighbours.each do |n|
       bottom = [n.trapezoid.bottom_left_corner.y, @trapezoid.bottom_right_corner.y].max
       top = [n.trapezoid.top_left_corner.y, @trapezoid.top_right_corner.y].min
       y = (bottom + top) / 2
-
-      #LENTO - Precisa de referencia duplicada
       i = n.left_neighbours.index(self)
       if n.left_vertices[i]
         v = n.left_vertices[i]
       else
         v = Graph::Vertice.new(Point[x,y])
-        graph.add_vertice(v) # so ocorre se ja nao existir
+        graph.add_vertice(v)
       end
-
       graph.add_edge(@vertice, v)
       @right_vertices << v
     end

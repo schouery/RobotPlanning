@@ -16,7 +16,7 @@ class Planning
     @show_graph = true
     @stop = false
     @segments = []
-    @show_line = false
+    @show_line = true
     @statusbar = statusbar
     @context = @statusbar.get_context_id("planning")
   end
@@ -36,7 +36,9 @@ class Planning
     Thread.new(block) do
       @stop = !@show_trapezoids
       segments.each do |segment|
-        if speed != 100 && !@stop
+        if speed != 100 && !@stop || @step_by_step
+          @drawer.clear
+          draw_ss
           new_trapezoids = @ss.update_list(segment)
           new_trapezoids.each do |t|
             @drawer.draw_trapezoid(t, :old => true)
@@ -45,7 +47,7 @@ class Planning
           wait(BASE_MAP_SPEED/@speed) 
         end
         @ss.add(segment)
-        if @speed != 100 && !@stop
+        if @speed != 100 && !@stop || @step_by_step
           @drawer.clear
           draw_ss
           @ss.new_trapezoids.each do |t|
@@ -56,7 +58,7 @@ class Planning
       end
       draw_ss if @stop
       @graph = @ss.create_graph
-      wait(BASE_MAP_SPEED/@speed) if speed != 100 && !@stop
+      wait(BASE_MAP_SPEED/@speed) if speed != 100 && !@stop || @step_by_step
       draw_graph if @stop
       draw
       block.call

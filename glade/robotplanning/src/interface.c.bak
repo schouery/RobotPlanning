@@ -51,6 +51,8 @@ create_mainwindow (void)
   GtkWidget *colors_graph;
   GtkWidget *color_trapezoids;
   GtkWidget *trapezoids_segments;
+  GtkWidget *new_trapezoides;
+  GtkWidget *destroied_trapezoids;
   GtkWidget *color_segments;
   GtkWidget *color_robot;
   GtkWidget *robot_line_color;
@@ -99,7 +101,6 @@ create_mainwindow (void)
   mainwindow = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_size_request (mainwindow, 800, 600);
   gtk_window_set_title (GTK_WINDOW (mainwindow), _("RobotPlanning"));
-  gtk_window_set_resizable (GTK_WINDOW (mainwindow), FALSE);
 
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_show (vbox1);
@@ -182,9 +183,17 @@ create_mainwindow (void)
   gtk_widget_show (color_trapezoids);
   gtk_container_add (GTK_CONTAINER (colors_menu), color_trapezoids);
 
-  trapezoids_segments = gtk_menu_item_new_with_mnemonic (_("Trapezoids - Linha"));
+  trapezoids_segments = gtk_menu_item_new_with_mnemonic (_("Trapezoides - Linha"));
   gtk_widget_show (trapezoids_segments);
   gtk_container_add (GTK_CONTAINER (colors_menu), trapezoids_segments);
+
+  new_trapezoides = gtk_menu_item_new_with_mnemonic (_("Novos Trapezoides"));
+  gtk_widget_show (new_trapezoides);
+  gtk_container_add (GTK_CONTAINER (colors_menu), new_trapezoides);
+
+  destroied_trapezoids = gtk_menu_item_new_with_mnemonic (_("Trapezoides Destru\303\255dos"));
+  gtk_widget_show (destroied_trapezoids);
+  gtk_container_add (GTK_CONTAINER (colors_menu), destroied_trapezoids);
 
   color_segments = gtk_menu_item_new_with_mnemonic (_("Segmentos"));
   gtk_widget_show (color_segments);
@@ -382,6 +391,12 @@ create_mainwindow (void)
   g_signal_connect ((gpointer) trapezoids_segments, "activate",
                     G_CALLBACK (on_trapezoids_segments_activate),
                     NULL);
+  g_signal_connect ((gpointer) new_trapezoides, "activate",
+                    G_CALLBACK (on_new_trapezoides_activate),
+                    NULL);
+  g_signal_connect ((gpointer) destroied_trapezoids, "activate",
+                    G_CALLBACK (on_destroied_trapezoids_activate),
+                    NULL);
   g_signal_connect ((gpointer) color_segments, "activate",
                     G_CALLBACK (on_color_segments_activate),
                     NULL);
@@ -448,6 +463,8 @@ create_mainwindow (void)
   GLADE_HOOKUP_OBJECT (mainwindow, colors_graph, "colors_graph");
   GLADE_HOOKUP_OBJECT (mainwindow, color_trapezoids, "color_trapezoids");
   GLADE_HOOKUP_OBJECT (mainwindow, trapezoids_segments, "trapezoids_segments");
+  GLADE_HOOKUP_OBJECT (mainwindow, new_trapezoides, "new_trapezoides");
+  GLADE_HOOKUP_OBJECT (mainwindow, destroied_trapezoids, "destroied_trapezoids");
   GLADE_HOOKUP_OBJECT (mainwindow, color_segments, "color_segments");
   GLADE_HOOKUP_OBJECT (mainwindow, color_robot, "color_robot");
   GLADE_HOOKUP_OBJECT (mainwindow, robot_line_color, "robot_line_color");

@@ -34,6 +34,9 @@ class RobotplanningGlade
     @glade['toolbar_save'].set_tooltip(@tooltip, _('Salvar'))
     @glade['toolbar_record_points'].set_tooltip(@tooltip, _('Adicionar Pontos'))
     @glade['toolbar_move'].set_tooltip(@tooltip, _('Mover Robô'))
+    @glade['toolbar_generate_map'].set_tooltip(@tooltip, _('Gerar Trapezoides'))
+    @glade['toolbar_next_step'].set_tooltip(@tooltip, _('Próximo Passo'))
+    @glade['add_point'].set_tooltip(@tooltip, _('Adicionar ponto'))
   end
   
   def initialize(path_or_data, root = nil, domain = nil, localedir = nil, flag = GladeXML::FILE)
@@ -44,6 +47,7 @@ class RobotplanningGlade
     @drawer = Drawer.new(@glade['drawingarea'].window, @glade['drawingarea'].style.black_gc)
     @planning = Planning.new(@drawer, @glade['statusbar'])
     @context = @glade['statusbar'].get_context_id("robotplanning")
+    @glade['toolbar_next_step'].sensitive = false
     create_dialogs
     clean
     connect_signals
@@ -139,14 +143,12 @@ class RobotplanningGlade
   
   # Make a search and move the robot
   def move
-    @glade['toolbar_next_step'].sensitive = @planning.step_by_step
     @glade['add_point'].sensitive = false
     @locate_thread = @planning.locate(@start, @finish) {move_finished}
   end
   
   # Called once the movement of the robot is finished
   def move_finished
-    @glade['toolbar_next_step'].sensitive = false
     @glade['toolbar_generate_map'].sensitive = true
     @glade['toolbar_record_points'].sensitive = true
     @locate_thread = nil
@@ -155,7 +157,6 @@ class RobotplanningGlade
   
   # Called once the generation of the map is finished
   def map_finished
-    @glade['toolbar_next_step'].sensitive = false
     @glade['toolbar_move'].sensitive = true
     @glade['toolbar_record_points'].sensitive = true
     @glade['toolbar_generate_map'].active = false
@@ -171,7 +172,6 @@ class RobotplanningGlade
     end
     @glade['add_point'].sensitive = false
     @glade['toolbar_move'].sensitive = false
-    @glade['toolbar_next_step'].sensitive = false
     @glade['toolbar_record_points'].sensitive = true
     @glade['toolbar_record_points'].active = false if @glade['toolbar_record_points'].active?
     @glade['toolbar_move'].active = false if @glade['toolbar_move'].active?
@@ -290,10 +290,8 @@ class RobotplanningGlade
     if !@glade['toolbar_generate_map'].active?
       @planning.stop = true if @map_thread
     else
-      @glade['toolbar_next_step'].sensitive = false
       @glade['toolbar_move'].sensitive = false
       @glade['toolbar_record_points'].sensitive = false
-      @glade['toolbar_next_step'].sensitive = @planning.step_by_step
       @map_thread = @planning.start(@segments, @max_x, @max_y) {map_finished}
     end
   end
@@ -315,7 +313,7 @@ class RobotplanningGlade
     
   def on_show_graph_activate(widget)
     @planning.show_graph = widget.active?
-    prints
+    print
   end
 
   def on_show_trapezoids_activate(widget)
@@ -333,7 +331,8 @@ class RobotplanningGlade
 
   def on_stepbystep_toggled(widget)
     @planning.step_by_step = widget.active?
-    @glade['toolbar_next_step'].sensitive = false if !@planning.step_by_step
+    @planning.step_by_step
+    @glade['toolbar_next_step'].sensitive = @planning.step_by_step
   end
   
   def on_color_segments_activate(widget)

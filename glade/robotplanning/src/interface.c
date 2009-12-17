@@ -162,6 +162,7 @@ create_mainwindow (void)
   robot_line = gtk_check_menu_item_new_with_mnemonic (_("Rastro"));
   gtk_widget_show (robot_line);
   gtk_container_add (GTK_CONTAINER (menuitem6_menu), robot_line);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (robot_line), TRUE);
 
   separador1 = gtk_separator_menu_item_new ();
   gtk_widget_show (separador1);
